@@ -2,139 +2,180 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#3b82f6">
-<title>EPI Master v1.0</title>
+<meta name="theme-color" content="#10b981">
+<title>EPI Master v5.2</title>
 <style>
-:root{--bg:#050505;--card:#111;--accent:#3b82f6;--text:#eee;--border:#222;--dim:#666;--highlight:#22c55e;--warn:#f97316}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:10px;display:flex;justify-content:center}
-.app{width:100%;max-width:500px;background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.5);min-height:90vh;display:flex;flex-direction:column}
+:root{--bg:#050505;--card:#111;--accent:#10b981;--text:#eee;--border:#222;--dim:#777;--warn:#f59e0b;--crit:#ef4444;--blue:#3b82f6}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);margin:0;padding:10px;display:flex;justify-content:center}
+.app{width:100%;max-width:500px;background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.5);min-height:95vh;display:flex;flex-direction:column}
 .header{background:#000;padding:15px;border-bottom:2px solid var(--accent);position:sticky;top:0;z-index:100}
-h1{font-size:.8rem;color:var(--accent);text-align:center;margin:0 0 10px 0;text-transform:uppercase;letter-spacing:2px}
-.search-box{width:100%;background:#1a1a1a;border:1px solid #333;padding:12px;color:#fff;border-radius:8px;font-size:1rem;outline:none;box-sizing:border-box}
-.search-box:focus{border-color:var(--accent)}
-.content{padding:15px;flex-grow:1;overflow-y:auto}
-.cat-section{margin-bottom:20px}
-.cat-title{font-size:.7rem;color:var(--dim);text-transform:uppercase;font-weight:900;margin-bottom:10px;border-bottom:1px solid #222;padding-bottom:5px;display:flex;justify-content:space-between}
-.epi-card{background:#161616;border:1px solid #222;border-radius:8px;padding:12px;margin-bottom:10px;transition:0.2s}
-.epi-card.match{border-color:var(--accent);background:#1a1f26}
-.epi-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px}
-.epi-code{font-family:monospace;font-size:1.1rem;color:var(--highlight);font-weight:bold}
-.epi-norm{font-size:.65rem;background:#333;padding:2px 6px;border-radius:4px;color:#fff}
-.epi-desc{font-size:.85rem;color:#ccc;line-height:1.4}
-.epi-detail{font-size:.75rem;color:var(--dim);margin-top:8px;padding-top:8px;border-top:1px dotted #333}
-.no-result{text-align:center;color:var(--dim);margin-top:50px;font-size:.9rem}
-.tag{display:inline-block;font-size:.6rem;padding:1px 4px;border-radius:3px;margin-right:4px;background:#222;color:var(--accent);border:1px solid var(--accent)}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+h1{font-size:.7rem;color:var(--accent);margin:0;text-transform:uppercase;letter-spacing:2px}
+#count-badge{font-size:.6rem;background:#222;padding:2px 8px;border-radius:10px;color:var(--dim);border:1px solid #333}
+.search-box{width:100%;background:#1a1a1a;border:1px solid #333;padding:12px;color:#fff;border-radius:8px;font-size:1rem;outline:none;box-sizing:border-box;margin-bottom:10px;-webkit-appearance:none}
+.search-box::placeholder{color:#555}
+.filter-bar{display:flex;gap:5px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.filter-bar::-webkit-scrollbar { display: none; }
+.filter-btn{background:#1a1a1a;border:1px solid #333;color:var(--dim);padding:5px 12px;border-radius:15px;font-size:.65rem;white-space:nowrap;cursor:pointer;text-transform:uppercase;transition:0.2s;user-select:none;-webkit-user-select:none}
+.filter-btn.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:bold}
+.filter-btn:active{transform:scale(.96)}
+.content{padding:15px;flex-grow:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.cat-section{margin-bottom:25px}
+.cat-title{font-size:.65rem;color:var(--dim);text-transform:uppercase;font-weight:900;margin-bottom:10px;border-bottom:1px solid #222;padding-bottom:5px;display:flex;justify-content:space-between}
+.epi-card{background:#161616;border:1px solid #222;border-radius:8px;padding:12px;margin-bottom:10px;border-left:4px solid var(--dim);touch-action:manipulation}
+.Tête{border-left-color:var(--blue)} .Yeux{border-left-color:#06b6d4} .Audition{border-left-color:#8b5cf6} 
+.Respiratoire{border-left-color:var(--warn)} .Mains{border-left-color:var(--accent)} .Corps{border-left-color:#6366f1} 
+.Pieds{border-left-color:#f43f5e} .Chute{border-left-color:var(--crit)} .Spécifique{border-left-color:#eab308}
+.epi-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.epi-code{font-family:monospace;font-size:1.05rem;color:#fff;font-weight:bold}
+.epi-norm{font-size:.6rem;background:#222;padding:2px 6px;border-radius:4px;color:var(--dim);border:1px solid #333}
+.epi-desc{font-size:.8rem;color:#ccc;line-height:1.4}
+.risk-tag{display:inline-block;font-size:.55rem;color:var(--accent);margin-top:5px;text-transform:uppercase;font-weight:bold;letter-spacing:0.5px}
+.no-res{color:#555;text-align:center;margin-top:40px;font-size:0.9rem}
 </style>
 </head>
 <body>
 <div class="app">
     <div class="header">
-        <h1>EPI Master v1.0</h1>
-        <input type="text" id="search" class="search-box" placeholder="Chercher S3, FFP2, EN 388, Chimie..." oninput="filter()">
-    </div>
-    <div class="content" id="container">
+        <div class="header-top">
+            <h1>EPI Master v5.2</h1>
+            <span id="count-badge">0 norme</span>
         </div>
+        <input type="text" id="search" class="search-box" placeholder="Saisir norme, code ou risque..." oninput="filter()">
+        <div class="filter-bar" id="filterBar">
+            <button class="filter-btn" data-filter="tous" onclick="setFilter('tous')">TOUS</button>
+            <button class="filter-btn" data-filter="mecanique" onclick="setFilter('mecanique')">MÉCANIQUE</button>
+            <button class="filter-btn" data-filter="bruit" onclick="setFilter('bruit')">BRUIT</button>
+            <button class="filter-btn" data-filter="chimie" onclick="setFilter('chimie')">CHIMIE / GAZ</button>
+            <button class="filter-btn" data-filter="chute" onclick="setFilter('chute')">CHUTE</button>
+            <button class="filter-btn" data-filter="elec" onclick="setFilter('elec')">ÉLEC / ARC</button>
+            <button class="filter-btn" data-filter="thermique" onclick="setFilter('thermique')">THERMIQUE</button>
+            <button class="filter-btn" data-filter="bio" onclick="setFilter('bio')">BIO</button>
+            <button class="filter-btn" data-filter="spe" onclick="setFilter('spe')">RAYON / LASER</button>
+        </div>
+    </div>
+    <div class="content" id="container"></div>
 </div>
 
 <script>
-const data = [
-    // PIEDS
-    {cat:"Pieds", code:"S1", norm:"EN ISO 20345", desc:"Embout 200J, Arrière fermé, Antistatique, Absorption d'énergie au talon.", tags:["chaussure","coque"]},
-    {cat:"Pieds", code:"S1P", norm:"EN ISO 20345", desc:"S1 + Semelle anti-perforation.", tags:["chaussure","chantier"]},
-    {cat:"Pieds", code:"S2", norm:"EN ISO 20345", desc:"S1 + Tige hydrofuge (WRU).", tags:["chaussure","humide"]},
-    {cat:"Pieds", code:"S3", norm:"EN ISO 20345", desc:"S2 + Semelle anti-perforation + Semelle à crampons.", tags:["chaussure","total"]},
-    {cat:"Pieds", code:"HRO", norm:"EN ISO 20345", desc:"Semelle résistante à la chaleur par contact (300°C pendant 60s).", tags:["chaussure","chaleur"]},
-    {cat:"Pieds", code:"HI", norm:"EN ISO 20345", desc:"Isolation du complexe de semelle contre la chaleur.", tags:["chaussure"]},
-    {cat:"Pieds", code:"CI", norm:"EN ISO 20345", desc:"Isolation du complexe de semelle contre le froid.", tags:["chaussure","froid"]},
-    
-    // MAINS - MECANIQUE
-    {cat:"Mains", code:"EN 388", norm:"Mécanique", desc:"Protection contre l'abrasion, coupure, déchirure, perforation.", detail:"Marquage: [0-4][0-5][0-4][0-4][A-F][P]. Ex: 4X42C.", tags:["gant","mecanique"]},
-    {cat:"Mains", code:"EN 511", norm:"Froid", desc:"Protection contre le froid convectif, de contact et perméabilité à l'eau.", tags:["gant","froid"]},
-    
-    // MAINS - CHIMIE (Lettres)
-    {cat:"Mains (Chimie)", code:"A", norm:"EN 374", desc:"Méthanol (Alcool primaire).", tags:["chimie"]},
-    {cat:"Mains (Chimie)", code:"F", norm:"EN 374", desc:"Toluène (Hydrocarbure aromatique).", tags:["chimie"]},
-    {cat:"Mains (Chimie)", code:"J", norm:"EN 374", desc:"n-Heptane (Hydrocarbure saturé).", tags:["chimie"]},
-    {cat:"Mains (Chimie)", code:"K", norm:"EN 374", desc:"Soude caustique 40% (Base inorganique).", tags:["chimie"]},
-    {cat:"Mains (Chimie)", code:"L", norm:"EN 374", desc:"Acide sulfurique 96% (Acide inorganique).", tags:["chimie"]},
-    {cat:"Mains (Chimie)", code:"M", norm:"EN 374", desc:"Acide nitrique 65%.", tags:["chimie"]},
-    
-    // RESPIRATOIRE
-    {cat:"Respiration", code:"FFP1", norm:"EN 149", desc:"Poussières fines et brouillards aqueux ou huileux (VME x4).", tags:["masque","poussiere"]},
-    {cat:"Respiration", code:"FFP2", norm:"EN 149", desc:"Poussières toxiques, fumées métalliques, virus (VME x10).", tags:["masque","toxic"]},
-    {cat:"Respiration", code:"FFP3", norm:"EN 149", desc:"Hautement toxique, Amiante, Bactéries, Virus (VME x50).", tags:["masque","amiante"]},
-    {cat:"Respiration", code:"Type A", norm:"Marron", desc:"Gaz et vapeurs organiques (solvants) - Point ébullition > 65°C.", tags:["cartouche","solvant"]},
-    {cat:"Respiration", code:"Type B", norm:"Gris", desc:"Gaz et vapeurs inorganiques (sauf CO).", tags:["cartouche"]},
-    {cat:"Respiration", code:"Type K", norm:"Vert", desc:"Ammoniac et dérivés organiques aminés.", tags:["cartouche","ammoniac"]},
-    
-    // TÊTE
-    {cat:"Tête", code:"EN 397", norm:"Casque", desc:"Casque de protection pour l'industrie (chocs verticaux).", tags:["casque"]},
-    {cat:"Tête", code:"EN 812", norm:"Casquette", desc:"Casquette anti-heurt (chocs contre objets fixes uniquement).", tags:["casquette"]},
-    
-    // YEUX
-    {cat:"Yeux", code:"EN 166", norm:"Oculaire", desc:"Spécifications générales pour la protection des yeux.", detail:"F: Impact faible (45m/s) | B: Moyen (120m/s) | A: Haute (190m/s) | 3: Liquides | 9: Métal fondu.", tags:["lunettes","visiere"]},
-    
-    // OUIE
-    {cat:"Ouïe", code:"SNR", norm:"EN 352", desc:"Single Number Rating. Valeur globale d'atténuation du bruit.", tags:["bouchon","casque","bruit"]},
-    
-    // CORPS
-    {cat:"Corps", code:"EN ISO 20471", norm:"Haute Visibilité", desc:"Vêtements de signalisation. Classe 1 (Min), 2, 3 (Max).", tags:["gilet","fluo"]},
-    {cat:"Corps", code:"Type 5", norm:"EN ISO 13982", desc:"Étanche aux particules solides (poussières).", tags:["combinaison"]},
-    {cat:"Corps", code:"Type 6", norm:"EN 13034", desc:"Protection limitée contre les produits chimiques liquides (éclaboussures).", tags:["combinaison"]},
-    
-    // CHUTE
-    {cat:"Antichute", code:"EN 361", norm:"Harnais", desc:"Harnais d'antichute complet (seule norme pour arrêt de chute).", tags:["harnais","hauteur"]},
-    {cat:"Antichute", code:"EN 355", norm:"Absorbeur", desc:"Absorbeurs d'énergie. Limite la force de choc sous 6kN.", tags:["longe","chute"]}
-];
+let currentFilter = 'tous';
+const ORDERED_CATS = ["Tête", "Yeux", "Audition", "Respiratoire", "Mains", "Corps", "Pieds", "Chute", "Spécifique"];
+let counter, searchInput, container;
 
-function filter() {
-    const query = document.getElementById('search').value.toLowerCase();
-    const container = document.getElementById('container');
-    container.innerHTML = '';
-
-    const categories = [...new Set(data.map(item => item.cat))];
-
-    let hasResult = false;
-    categories.forEach(cat => {
-        const items = data.filter(i => i.cat === cat && (
-            i.code.toLowerCase().includes(query) || 
-            i.desc.toLowerCase().includes(query) || 
-            i.norm.toLowerCase().includes(query) ||
-            i.tags.some(t => t.includes(query))
-        ));
-
-        if (items.length > 0) {
-            hasResult = true;
-            const sec = document.createElement('div');
-            sec.className = 'cat-section';
-            sec.innerHTML = `<div class="cat-title">${cat} <span>${items.length}</span></div>`;
-            
-            items.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'epi-card' + (query !== '' ? ' match' : '');
-                card.innerHTML = `
-                    <div class="epi-head">
-                        <span class="epi-code">${item.code}</span>
-                        <span class="epi-norm">${item.norm}</span>
-                    </div>
-                    <div class="epi-desc">${item.desc}</div>
-                    ${item.detail ? `<div class="epi-detail">${item.detail}</div>` : ''}
-                `;
-                sec.appendChild(card);
-            });
-            container.appendChild(sec);
-        }
-    });
-
-    if (!hasResult) {
-        container.innerHTML = `<div class="no-result">Aucun EPI ou norme ne correspond à "${query}"</div>`;
+function normalize(str) {
+    try {
+        return (str || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    } catch {
+        return (str || '').toLowerCase();
     }
 }
 
-// Initialisation
-window.onload = filter;
+const rawData = [
+    {cat:"Tête", code:"EN 397", norm:"Industrie", desc:"Casque standard. Options: 440V AC, LD, MM, -30°C.", risk:"mecanique", tags:["chantier"]},
+    {cat:"Tête", code:"EN 812", norm:"Anti-heurt", desc:"Casquette pour chocs fixes. Pas de protection chutes d'objets.", risk:"mecanique", tags:["maintenance"]},
+    {cat:"Tête", code:"EN 50365", norm:"Isolant", desc:"Casque isolant pour installations BT (<1000V).", risk:"elec", tags:["elec"]},
+    {cat:"Tête", code:"EN 12492", norm:"Hauteur", desc:"Casque travaux en hauteur. Jugulaire >50daN. Maintien en chute.", risk:"chute", tags:["nacelle"]},
+    {cat:"Yeux", code:"EN 166", norm:"Oculaire", desc:"Base. F: 45m/s | B: 120m/s. K/N: Anti-rayure/buée.", risk:"mecanique", tags:["lunettes"]},
+    {cat:"Yeux", code:"EN 170/171", norm:"UV / IR", desc:"Filtres Ultraviolet (170) et Infrarouge (171).", risk:"thermique", tags:["soleil"]},
+    {cat:"Audition", code:"EN 352-1/2/3", norm:"Bruit", desc:"SNR: Atténuation globale en dB.", risk:"bruit", tags:["SNR"]},
+    {cat:"Respiratoire", code:"EN 149", norm:"FFP", desc:"Demi-masques filtrants particules. P3: Filtration 99%.", risk:"bio", tags:["masque"]},
+    {cat:"Respiratoire", code:"EN 14387", norm:"Filtres Gaz", desc:"Code couleur cartouches. A: Brun | B: Gris | E: Jaune | K: Vert.", risk:"chimie", tags:["ABEK"]},
+    {cat:"Mains", code:"EN 388", norm:"Mécanique", desc:"Abrasion, Coupure (TDM), Déchirure, Perforation.", risk:"mecanique", tags:["gant"]},
+    {cat:"Mains", code:"EN 511", norm:"Froid", desc:"Froid convectif, contact et étanchéité eau.", risk:"thermique", tags:["frigo"]},
+    {cat:"Mains", code:"EN 60903", norm:"Isolants", desc:"Gants latex isolants électriques. Classes 00 à 4.", risk:"elec", tags:["BT"]},
+    {cat:"Corps", code:"EN ISO 20471", norm:"Haute Visu", desc:"Signalisation. Classe 3 (max), Classe 2 (standard).", risk:"mecanique", tags:["gilet"]},
+    {cat:"Corps", code:"EN 61482", norm:"Arc Flash", desc:"Vêtements protection dangers thermiques arc électrique.", risk:"elec", tags:["arc"]},
+    {cat:"Corps", code:"EN 14126", norm:"Biohazard", desc:"Protection agents infectieux. Marquage -B.", risk:"bio", tags:["EMS"]},
+    {cat:"Pieds", code:"S1P / S3", norm:"Sécurité", desc:"Embout 200J. S3: Hydrofuge + Anti-perforation.", risk:"mecanique", tags:["chaussure"]},
+    {cat:"Chute", code:"EN 361", norm:"Harnais", desc:"Seul dispositif autorisé pour l'arrêt de chute.", risk:"chute", tags:["hauteur"]},
+    {cat:"Chute", code:"EN 362", norm:"Connecteurs", desc:"Mousquetons et connecteurs. Verrouillage obligatoire.", risk:"chute", tags:["mousqueton"]},
+    {cat:"Chute", code:"EN 363", norm:"Système", desc:"Système complet d'arrêt de chute.", risk:"chute", tags:["systeme"]},
+    {cat:"Chute", code:"EN 353", norm:"Antichute", desc:"Antichute mobile sur support d'assurage rigide ou flexible.", risk:"chute", tags:["ligne"]},
+    {cat:"Chute", code:"EN 354", norm:"Longe", desc:"Longe sans absorbeur. À combiner avec EN 355.", risk:"chute", tags:["corde"]},
+    {cat:"Chute", code:"EN 355", norm:"Absorbeur", desc:"Longe avec absorbeur d'énergie. Limite le choc à 6kN.", risk:"chute", tags:["longe"]},
+    {cat:"Chute", code:"EN 795", norm:"Ancrages", desc:"Dispositifs d'ancrage Types A/B/C/D/E. Lignes de vie.", risk:"chute", tags:["ancrage"]},
+    {cat:"Spécifique", code:"EN 207/208", norm:"Laser", desc:"207: Intégrale | 208: Réglage. Protection faisceau.", risk:"spe", tags:["laser"]},
+    {cat:"Spécifique", code:"EN 61331", norm:"Ionisant", desc:"Protection contre les rayonnements X et gamma (Plombé).", risk:"spe", tags:["hopital"]}
+];
+
+const preparedData = rawData.map(i => ({
+    ...i,
+    _code: normalize(i.code),
+    _norm: normalize(i.norm),
+    _desc: normalize(i.desc),
+    _risk: normalize(i.risk || ''),
+    _tags: (i.tags || []).map(t => normalize(t))
+}));
+
+function setFilter(f) {
+    currentFilter = f;
+    searchInput.value = '';
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === f);
+    });
+    filter();
+}
+
+function filter() {
+    const q = normalize(searchInput.value);
+    container.innerHTML = '';
+    if(container.scrollTop !== 0) container.scrollTop = 0;
+    
+    const fragment = document.createDocumentFragment();
+    let totalVisible = 0;
+
+    ORDERED_CATS.forEach(cat => {
+        const items = preparedData.filter(i => {
+            if (i.cat !== cat) return false;
+            const matchQuery = i._code.includes(q) || i._norm.includes(q) || 
+                               i._desc.includes(q) || i._tags.some(t => t.includes(q)) || 
+                               i._risk.includes(q);
+            const matchFilter = currentFilter === 'tous' || i._risk === currentFilter;
+            return matchQuery && matchFilter;
+        });
+
+        if (items.length > 0) {
+            items.sort((a,b) => (a.code || '').localeCompare(b.code || '', undefined, {numeric:true}));
+            totalVisible += items.length;
+            const sec = document.createElement('div');
+            sec.className = 'cat-section';
+            sec.innerHTML = `<div class="cat-title">${cat} <span>${items.length}</span></div>`;
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `epi-card ${item.cat}`;
+                card.innerHTML = `
+                    <div class="epi-head">
+                        <span class="epi-code">${item.code || ''}</span>
+                        <span class="epi-norm">${item.norm || ''}</span>
+                    </div>
+                    <div class="epi-desc">${item.desc || ''}</div>
+                    <div class="risk-tag">⚠ RISQUE: ${(item.risk || 'INCONNU').toUpperCase()}</div>
+                `;
+                sec.appendChild(card);
+            });
+            fragment.appendChild(sec);
+        }
+    });
+
+    if (totalVisible === 0 && q !== '') {
+        const empty = document.createElement('div');
+        empty.className = 'no-res';
+        empty.innerText = 'Aucun résultat correspondant';
+        container.appendChild(empty);
+    } else {
+        container.appendChild(fragment);
+    }
+    counter.innerText = `${totalVisible} norme${totalVisible > 1 ? 's' : ''}`;
+}
+
+window.onload = () => {
+    counter = document.getElementById('count-badge');
+    searchInput = document.getElementById('search');
+    container = document.getElementById('container');
+    setFilter('tous');
+};
 </script>
 </body>
 </html>
