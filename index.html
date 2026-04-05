@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#10b981">
-<title>EPI Master v5.2</title>
+<title>EPI Master v5.6</title>
 <style>
 :root{--bg:#050505;--card:#111;--accent:#10b981;--text:#eee;--border:#222;--dim:#777;--warn:#f59e0b;--crit:#ef4444;--blue:#3b82f6}
 body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);margin:0;padding:10px;display:flex;justify-content:center}
@@ -27,7 +27,7 @@ h1{font-size:.7rem;color:var(--accent);margin:0;text-transform:uppercase;letter-
 .epi-card{background:#161616;border:1px solid #222;border-radius:8px;padding:12px;margin-bottom:10px;border-left:4px solid var(--dim);touch-action:manipulation}
 .Tête{border-left-color:var(--blue)} .Yeux{border-left-color:#06b6d4} .Audition{border-left-color:#8b5cf6} 
 .Respiratoire{border-left-color:var(--warn)} .Mains{border-left-color:var(--accent)} .Corps{border-left-color:#6366f1} 
-.Pieds{border-left-color:#f43f5e} .Chute{border-left-color:var(--crit)} .Spécifique{border-left-color:#eab308}
+.Pieds{border-left-color:#f43f5e} .Chute{border-left-color:var(--crit)} .Peau{border-left-color:#ec4899} .Spécifique{border-left-color:#eab308}
 .epi-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
 .epi-code{font-family:monospace;font-size:1.05rem;color:#fff;font-weight:bold}
 .epi-norm{font-size:.6rem;background:#222;padding:2px 6px;border-radius:4px;color:var(--dim);border:1px solid #333}
@@ -40,17 +40,16 @@ h1{font-size:.7rem;color:var(--accent);margin:0;text-transform:uppercase;letter-
 <div class="app">
     <div class="header">
         <div class="header-top">
-            <h1>EPI Master v5.2</h1>
+            <h1>EPI Master v5.6</h1>
             <span id="count-badge">0 norme</span>
         </div>
-        <input type="text" id="search" class="search-box" placeholder="Saisir norme, code ou risque..." oninput="filter()">
+        <input type="text" id="search" class="search-box" placeholder="Saisie norme, code ou risque..." oninput="filter()">
         <div class="filter-bar" id="filterBar">
             <button class="filter-btn" data-filter="tous" onclick="setFilter('tous')">TOUS</button>
             <button class="filter-btn" data-filter="mecanique" onclick="setFilter('mecanique')">MÉCANIQUE</button>
-            <button class="filter-btn" data-filter="bruit" onclick="setFilter('bruit')">BRUIT</button>
             <button class="filter-btn" data-filter="chimie" onclick="setFilter('chimie')">CHIMIE / GAZ</button>
             <button class="filter-btn" data-filter="chute" onclick="setFilter('chute')">CHUTE</button>
-            <button class="filter-btn" data-filter="elec" onclick="setFilter('elec')">ÉLEC / ARC</button>
+            <button class="filter-btn" data-filter="elec" onclick="setFilter('elec')">ÉLEC / ATEX</button>
             <button class="filter-btn" data-filter="thermique" onclick="setFilter('thermique')">THERMIQUE</button>
             <button class="filter-btn" data-filter="bio" onclick="setFilter('bio')">BIO</button>
             <button class="filter-btn" data-filter="spe" onclick="setFilter('spe')">RAYON / LASER</button>
@@ -61,7 +60,7 @@ h1{font-size:.7rem;color:var(--accent);margin:0;text-transform:uppercase;letter-
 
 <script>
 let currentFilter = 'tous';
-const ORDERED_CATS = ["Tête", "Yeux", "Audition", "Respiratoire", "Mains", "Corps", "Pieds", "Chute", "Spécifique"];
+const ORDERED_CATS = ["Tête", "Yeux", "Audition", "Respiratoire", "Mains", "Corps", "Pieds", "Chute", "Peau", "Spécifique"];
 let counter, searchInput, container;
 
 function normalize(str) {
@@ -73,31 +72,68 @@ function normalize(str) {
 }
 
 const rawData = [
-    {cat:"Tête", code:"EN 397", norm:"Industrie", desc:"Casque standard. Options: 440V AC, LD, MM, -30°C.", risk:"mecanique", tags:["chantier"]},
-    {cat:"Tête", code:"EN 812", norm:"Anti-heurt", desc:"Casquette pour chocs fixes. Pas de protection chutes d'objets.", risk:"mecanique", tags:["maintenance"]},
+    // TÊTE
+    {cat:"Tête", code:"EN 397", norm:"Industrie", desc:"Casque standard. Chocs verticaux. LD, MM, -30°C.", risk:"mecanique", tags:["chantier"]},
+    {cat:"Tête", code:"EN 812", norm:"Anti-heurt", desc:"Casquette pour chocs fixes. Pas de protection chutes.", risk:"mecanique", tags:["maintenance"]},
     {cat:"Tête", code:"EN 50365", norm:"Isolant", desc:"Casque isolant pour installations BT (<1000V).", risk:"elec", tags:["elec"]},
-    {cat:"Tête", code:"EN 12492", norm:"Hauteur", desc:"Casque travaux en hauteur. Jugulaire >50daN. Maintien en chute.", risk:"chute", tags:["nacelle"]},
-    {cat:"Yeux", code:"EN 166", norm:"Oculaire", desc:"Base. F: 45m/s | B: 120m/s. K/N: Anti-rayure/buée.", risk:"mecanique", tags:["lunettes"]},
-    {cat:"Yeux", code:"EN 170/171", norm:"UV / IR", desc:"Filtres Ultraviolet (170) et Infrarouge (171).", risk:"thermique", tags:["soleil"]},
-    {cat:"Audition", code:"EN 352-1/2/3", norm:"Bruit", desc:"SNR: Atténuation globale en dB.", risk:"bruit", tags:["SNR"]},
-    {cat:"Respiratoire", code:"EN 149", norm:"FFP", desc:"Demi-masques filtrants particules. P3: Filtration 99%.", risk:"bio", tags:["masque"]},
-    {cat:"Respiratoire", code:"EN 14387", norm:"Filtres Gaz", desc:"Code couleur cartouches. A: Brun | B: Gris | E: Jaune | K: Vert.", risk:"chimie", tags:["ABEK"]},
-    {cat:"Mains", code:"EN 388", norm:"Mécanique", desc:"Abrasion, Coupure (TDM), Déchirure, Perforation.", risk:"mecanique", tags:["gant"]},
+    {cat:"Tête", code:"EN 12492", norm:"Hauteur", desc:"Casque travaux en hauteur. Jugulaire >50daN.", risk:"chute", tags:["nacelle"]},
+
+    // YEUX / VISAGE
+    {cat:"Yeux", code:"EN 166", norm:"Oculaire", desc:"Base protection oculaire. F, B, A (Impacts).", risk:"mecanique", tags:["lunettes"]},
+    {cat:"Yeux", code:"EN 169", norm:"Soudure", desc:"Filtres pour le soudage et techniques connexes.", risk:"thermique", tags:["arc"]},
+    {cat:"Yeux", code:"EN 170", norm:"UV", desc:"Filtres Ultraviolet. Protection rayons UV.", risk:"thermique", tags:["soleil"]},
+    {cat:"Yeux", code:"EN 171", norm:"IR", desc:"Filtres Infrarouge. Protection rayonnement thermique.", risk:"thermique", tags:["chaleur"]},
+    {cat:"Yeux", code:"EN 172", norm:"Solaire", desc:"Filtres de protection solaire (usage industriel).", risk:"thermique", tags:["soleil"]},
+    {cat:"Yeux", code:"EN 175", norm:"Soudage", desc:"Support facial pour équipements de soudage.", risk:"thermique", tags:["masque"]},
+    {cat:"Yeux", code:"EN 379", norm:"Auto", desc:"Filtres de soudage à échelon commutable.", risk:"thermique", tags:["arc"]},
+
+    // AUDITION
+    {cat:"Audition", code:"EN 352-1/2/3", norm:"Bruit", desc:"SNR: Atténuation dB. Casques, bouchons, montés.", risk:"bruit", tags:["SNR"]},
+
+    // RESPIRATOIRE
+    {cat:"Respiratoire", code:"EN 149", norm:"FFP", desc:"FFP1 (80%) | FFP2 (94%) | FFP3 (99%). Jetables.", risk:"bio", tags:["masque"]},
+    {cat:"Respiratoire", code:"EN 12941", norm:"PAPR", desc:"Appareils filtrants ventilés assistés (Turbo).", risk:"chimie", tags:["amiante","ventilé"]},
+    {cat:"Respiratoire", code:"EN 136", norm:"Complet", desc:"Masques complets. Protection visage entier.", risk:"chimie", tags:["gaz"]},
+    {cat:"Respiratoire", code:"EN 140", norm:"Demi", desc:"Demi-masques et quarts de masques.", risk:"chimie", tags:["peinture"]},
+    {cat:"Respiratoire", code:"EN 137", norm:"ARI", desc:"Appareil Respiratoire Isolant autonome.", risk:"chimie", tags:["pompiers"]},
+    {cat:"Respiratoire", code:"EN 14387", norm:"Gaz", desc:"Cartouches gaz/vapeurs. A, B, E, K, P.", risk:"chimie", tags:["ABEK"]},
+
+    // MAINS
+    {cat:"Mains", code:"EN 388", norm:"Mécanique", desc:"Abrasion, Coupure, Déchirure, Perforation.", risk:"mecanique", tags:["gant"]},
+    {cat:"Mains", code:"EN 374", norm:"Chimique", desc:"Gants contre produits chimiques/microbes.", risk:"chimie", tags:["nitrile"]},
+    {cat:"Mains", code:"EN 12477", norm:"Soudeur", desc:"Gants de protection pour soudeurs.", risk:"thermique", tags:["cuir"]},
+    {cat:"Mains", code:"EN 407", norm:"Chaleur", desc:"Résistance flamme et chaleur de contact.", risk:"thermique", tags:["feu"]},
     {cat:"Mains", code:"EN 511", norm:"Froid", desc:"Froid convectif, contact et étanchéité eau.", risk:"thermique", tags:["frigo"]},
-    {cat:"Mains", code:"EN 60903", norm:"Isolants", desc:"Gants latex isolants électriques. Classes 00 à 4.", risk:"elec", tags:["BT"]},
-    {cat:"Corps", code:"EN ISO 20471", norm:"Haute Visu", desc:"Signalisation. Classe 3 (max), Classe 2 (standard).", risk:"mecanique", tags:["gilet"]},
-    {cat:"Corps", code:"EN 61482", norm:"Arc Flash", desc:"Vêtements protection dangers thermiques arc électrique.", risk:"elec", tags:["arc"]},
-    {cat:"Corps", code:"EN 14126", norm:"Biohazard", desc:"Protection agents infectieux. Marquage -B.", risk:"bio", tags:["EMS"]},
-    {cat:"Pieds", code:"S1P / S3", norm:"Sécurité", desc:"Embout 200J. S3: Hydrofuge + Anti-perforation.", risk:"mecanique", tags:["chaussure"]},
+    {cat:"Mains", code:"EN 60903", norm:"Isolants", desc:"Gants latex isolants (Classes 00 à 4).", risk:"elec", tags:["BT"]},
+
+    // CORPS
+    {cat:"Corps", code:"EN ISO 13688", norm:"Base", desc:"Exigences générales vêtements de protection.", risk:"mecanique", tags:["vetement"]},
+    {cat:"Corps", code:"EN ISO 20471", norm:"Signal", desc:"Haute Visibilité. Classe 3, Classe 2.", risk:"mecanique", tags:["gilet"]},
+    {cat:"Corps", code:"EN 1149", norm:"Antistatique", desc:"Vêtements de protection dissipant les charges (ATEX).", risk:"elec", tags:["atex"]},
+    {cat:"Corps", code:"EN 342", norm:"Froid", desc:"Protection contre le froid (< -5°C).", risk:"thermique", tags:["hiver"]},
+    {cat:"Corps", code:"EN 343", norm:"Pluie", desc:"Vêtements de protection contre la pluie.", risk:"thermique", tags:["pluie"]},
+    {cat:"Corps", code:"EN ISO 11612", norm:"Chaleur", desc:"Vêtements protection chaleur et flammes.", risk:"thermique", tags:["industrie"]},
+    {cat:"Corps", code:"EN 13034", norm:"Chimie 6", desc:"Protection chimique légère (Type 6).", risk:"chimie", tags:["nettoyage"]},
+
+    // PIEDS
+    {cat:"Pieds", code:"EN ISO 20345", norm:"S1-S5", desc:"Chaussures sécurité (Embout 200J).", risk:"mecanique", tags:["coque"]},
+    {cat:"Pieds", code:"EN ISO 20347", norm:"Travail", desc:"Chaussures de travail sans embout.", risk:"mecanique", tags:["pro"]},
+    {cat:"Pieds", code:"ESD / 61340", norm:"ESD", desc:"Contrôle décharge statique (ATEX).", risk:"elec", tags:["atex"]},
+
+    // CHUTE
     {cat:"Chute", code:"EN 361", norm:"Harnais", desc:"Seul dispositif autorisé pour l'arrêt de chute.", risk:"chute", tags:["hauteur"]},
-    {cat:"Chute", code:"EN 362", norm:"Connecteurs", desc:"Mousquetons et connecteurs. Verrouillage obligatoire.", risk:"chute", tags:["mousqueton"]},
-    {cat:"Chute", code:"EN 363", norm:"Système", desc:"Système complet d'arrêt de chute.", risk:"chute", tags:["systeme"]},
-    {cat:"Chute", code:"EN 353", norm:"Antichute", desc:"Antichute mobile sur support d'assurage rigide ou flexible.", risk:"chute", tags:["ligne"]},
-    {cat:"Chute", code:"EN 354", norm:"Longe", desc:"Longe sans absorbeur. À combiner avec EN 355.", risk:"chute", tags:["corde"]},
-    {cat:"Chute", code:"EN 355", norm:"Absorbeur", desc:"Longe avec absorbeur d'énergie. Limite le choc à 6kN.", risk:"chute", tags:["longe"]},
-    {cat:"Chute", code:"EN 795", norm:"Ancrages", desc:"Dispositifs d'ancrage Types A/B/C/D/E. Lignes de vie.", risk:"chute", tags:["ancrage"]},
-    {cat:"Spécifique", code:"EN 207/208", norm:"Laser", desc:"207: Intégrale | 208: Réglage. Protection faisceau.", risk:"spe", tags:["laser"]},
-    {cat:"Spécifique", code:"EN 61331", norm:"Ionisant", desc:"Protection contre les rayonnements X et gamma (Plombé).", risk:"spe", tags:["hopital"]}
+    {cat:"Chute", code:"EN 358", norm:"Maintien", desc:"Positionnement et maintien au travail.", risk:"chute", tags:["ceinture"]},
+    {cat:"Chute", code:"EN 353-1/2", norm:"Mobile", desc:"Antichute mobile (Rail rigide / Corde flexible).", risk:"chute", tags:["ligne"]},
+    {cat:"Chute", code:"EN 355", norm:"Absorbeur", desc:"Longes avec absorbeur d'énergie (max 6kN).", risk:"chute", tags:["chute"]},
+    {cat:"Chute", code:"EN 360", norm:"Rappel", desc:"Antichute à rappel automatique (enrouleur).", risk:"chute", tags:["securite"]},
+    {cat:"Chute", code:"EN 795", norm:"Ancrages", desc:"Points d'ancrage A/B/C/D/E.", risk:"chute", tags:["ancrage"]},
+
+    // PEAU / INFO
+    {cat:"Peau", code:"Directive 89/656", norm:"Usage", desc:"Directive usage EPI (Info pédagogique).", risk:"bio", tags:["creme"]},
+
+    // SPÉCIFIQUE
+    {cat:"Spécifique", code:"EN 207/208", norm:"Laser", desc:"Protection laser intégrale ou réglage.", risk:"spe", tags:["faisceau"]},
+    {cat:"Spécifique", code:"EN 421", norm:"Ionisant", desc:"Protection rayonnements (Gants/Vêtements).", risk:"spe", tags:["radio"]}
 ];
 
 const preparedData = rawData.map(i => ({
@@ -122,17 +158,15 @@ function filter() {
     const q = normalize(searchInput.value);
     container.innerHTML = '';
     if(container.scrollTop !== 0) container.scrollTop = 0;
-    
     const fragment = document.createDocumentFragment();
     let totalVisible = 0;
 
     ORDERED_CATS.forEach(cat => {
         const items = preparedData.filter(i => {
             if (i.cat !== cat) return false;
-            const matchQuery = i._code.includes(q) || i._norm.includes(q) || 
-                               i._desc.includes(q) || i._tags.some(t => t.includes(q)) || 
-                               i._risk.includes(q);
-            const matchFilter = currentFilter === 'tous' || i._risk === currentFilter;
+            const riskNorm = i._risk;
+            const matchQuery = i._code.includes(q) || i._norm.includes(q) || i._desc.includes(q) || i._tags.some(t => t.includes(q)) || riskNorm.includes(q);
+            const matchFilter = currentFilter === 'tous' || riskNorm === currentFilter;
             return matchQuery && matchFilter;
         });
 
@@ -145,14 +179,7 @@ function filter() {
             items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = `epi-card ${item.cat}`;
-                card.innerHTML = `
-                    <div class="epi-head">
-                        <span class="epi-code">${item.code || ''}</span>
-                        <span class="epi-norm">${item.norm || ''}</span>
-                    </div>
-                    <div class="epi-desc">${item.desc || ''}</div>
-                    <div class="risk-tag">⚠ RISQUE: ${(item.risk || 'INCONNU').toUpperCase()}</div>
-                `;
+                card.innerHTML = `<div class="epi-head"><span class="epi-code">${item.code || ''}</span><span class="epi-norm">${item.norm || ''}</span></div><div class="epi-desc">${item.desc || ''}</div><div class="risk-tag">⚠ RISQUE: ${(item.risk || 'INCONNU').toUpperCase()}</div>`;
                 sec.appendChild(card);
             });
             fragment.appendChild(sec);
