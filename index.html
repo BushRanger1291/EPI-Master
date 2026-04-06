@@ -4,7 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#10b981">
-<title>EPI Master v7.9</title>
+<title>EPI Master v7.9.5</title>
+
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1063/1063303.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <style>
 :root{--bg:#050505;--card:#161616;--accent:#10b981;--text:#eee;--border:#222}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -41,7 +47,7 @@ body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);pa
 <div id="container"></div>
 
 <script>
-const ICONS={"Tête":"🪖","Yeux":"🥽","Audition":"🎧","Respiratoire":"😷","Mains":"🧤","Corps":"🦺","Pieds":"👟","Chute":"🪢","Spécifique":"☢️"}
+const ICONS={"Tête":"🪖","Yeux":"🥽","Audition":"🎧","Respiratoire":"😷","Mains":"🧤","Corps":"🦺","Pieds":"👟","Chute":"🪢","Extincteurs":"🧯","Spécifique":"☢️"}
 const RISK_META={
   mecanique:{label:"Mécanique",color:"#f59e0b",bg:"#2d2006"},
   chimie:{label:"Chimique",color:"#8b5cf6",bg:"#1e1330"},
@@ -161,32 +167,20 @@ const rawData=[
 {cat:"Corps",code:"EN 14605",norm:"Chimie étanche",desc:"Type 3 et 4",risk:"chimie"},
 
 // PIEDS
-{cat:"Pieds",code:"S1",norm:"Sécurité",desc:"Embout 200J, antistatique, absorption talon, semelle hydrocarbures",risk:"mecanique"},
-{cat:"Pieds",code:"S1P",norm:"Sécurité",desc:"S1 + semelle anti-perforation",risk:"mecanique"},
-{cat:"Pieds",code:"S2",norm:"Sécurité",desc:"S1 + résistance pénétration eau (WRU)",risk:"mecanique"},
-{cat:"Pieds",code:"S3",norm:"Sécurité",desc:"S2 + anti-perforation + semelle cramponnée",risk:"mecanique"},
-{cat:"Pieds",code:"S4",norm:"Botte",desc:"Embout 200J, polymère étanche, antistatique",risk:"mecanique"},
-{cat:"Pieds",code:"S5",norm:"Botte",desc:"S4 + anti-perforation + semelle cramponnée",risk:"mecanique"},
-{cat:"Pieds",code:"S6",norm:"Sécurité",desc:"S2 + étanchéité complète WR",risk:"mecanique"},
-{cat:"Pieds",code:"S7",norm:"Sécurité",desc:"S3 + étanchéité complète WR",risk:"mecanique"},
-
-{cat:"Pieds",code:"EN ISO 20347",norm:"Travail",desc:"Chaussures sans embout de sécurité",risk:"mecanique"},
-{cat:"Pieds",code:"EN ISO 20349",norm:"Fonderie",desc:"Protection métal en fusion et chaleur",risk:"thermique"},
-{cat:"Pieds",code:"EN ISO 20346",norm:"Protection",desc:"Embout protection 100 joules",risk:"mecanique"},
-{cat:"Pieds",code:"EN ISO 20348",norm:"Chimie",desc:"Protection produits chimiques liquides",risk:"chimie"},
-{cat:"Pieds",code:"EN ISO 17249",norm:"Tronçonneuse",desc:"Protection scie chaîne pour pieds",risk:"mecanique"},
-{cat:"Pieds",code:"EN ISO 13287",norm:"Glissement",desc:"Résistance au glissement SRC",risk:"mecanique"},
-
-{cat:"Pieds",code:"SRC",norm:"Antidérapant",desc:"Résistance glissement sol céramique + acier",risk:"mecanique"},
-{cat:"Pieds",code:"SRA",norm:"Antidérapant",desc:"Glissement sol céramique",risk:"mecanique"},
-{cat:"Pieds",code:"SRB",norm:"Antidérapant",desc:"Glissement sol acier",risk:"mecanique"},
-{cat:"Pieds",code:"CI",norm:"Isolation froid",desc:"Protection froid semelle",risk:"thermique"},
-{cat:"Pieds",code:"HI",norm:"Isolation chaleur",desc:"Protection chaleur semelle",risk:"thermique"},
-{cat:"Pieds",code:"HRO",norm:"Chaleur contact",desc:"Semelle résistante 300°C",risk:"thermique"},
-{cat:"Pieds",code:"WR",norm:"Étanche",desc:"Chaussure totalement imperméable",risk:"mecanique"},
-{cat:"Pieds",code:"WRU",norm:"Tige hydrofuge",desc:"Résistance pénétration eau",risk:"mecanique"},
-{cat:"Pieds",code:"ESD",norm:"Electrostatique",desc:"Dissipation charges électrostatiques",risk:"elec"},
-{cat:"Pieds",code:"FO",norm:"Hydrocarbures",desc:"Résistance huiles carburants",risk:"chimie"},
+{cat:"Pieds",code:"S1",norm:"Base",desc:"Coquée + Antistatique + Talon",risk:"mecanique"},
+{cat:"Pieds",code:"S1P",norm:"Anti-perf",desc:"S1 + Semelle anti-perforation",risk:"mecanique"},
+{cat:"Pieds",code:"S2",norm:"Eau",desc:"S1 + Tige résistante eau",risk:"mecanique"},
+{cat:"Pieds",code:"S3",norm:"Chantier",desc:"S2 + Perforation + Crampons",risk:"mecanique"},
+{cat:"Pieds",code:"S4",norm:"Botte",desc:"Polymère embout",risk:"mecanique"},
+{cat:"Pieds",code:"S5",norm:"Botte anti-perf",desc:"S4 + anti perforation",risk:"mecanique"},
+{cat:"Pieds",code:"S6",norm:"Étanche S2",desc:"S2 + Étanchéité totale WR",risk:"mecanique"},
+{cat:"Pieds",code:"S7",norm:"Étanche S3",desc:"S3 + Étanchéité totale WR",risk:"mecanique"},
+{cat:"Pieds",code:"EN ISO 20347",norm:"Travail",desc:"Chaussures sans embout sécurité",risk:"mecanique"},
+{cat:"Pieds",code:"EN ISO 20349",norm:"Fonderie",desc:"Protection métal en fusion",risk:"thermique"},
+{cat:"Pieds",code:"EN ISO 20346",norm:"Protection",desc:"Embout 100 joules",risk:"mecanique"},
+{cat:"Pieds",code:"EN ISO 20348",norm:"Chimie",desc:"Protection produits chimiques",risk:"chimie"},
+{cat:"Pieds",code:"EN ISO 17249",norm:"Tronçonneuse",desc:"Protection scie chaîne",risk:"mecanique"},
+{cat:"Pieds",code:"EN ISO 13287",norm:"Glissement",desc:"Résistance glissement",risk:"mecanique"},
 
 // CHUTE
 {cat:"Chute",code:"EN 361",norm:"Harnais",desc:"Harnais complet arrêt chute",risk:"chute"},
@@ -207,6 +201,17 @@ const rawData=[
 {cat:"Chute",code:"EN 813",norm:"Ceinture",desc:"Travaux sur corde",risk:"chute"},
 {cat:"Chute",code:"EN 341",norm:"Descendeur",desc:"Évacuation contrôlée",risk:"chute"},
 {cat:"Chute",code:"EN 1497",norm:"Sauvetage",desc:"Harnais évacuation",risk:"chute"},
+
+// EXTINCTEURS
+{cat:"Extincteurs",code:"Classe A",norm:"Feux secs",desc:"Bois, papier, tissus, braises",risk:"thermique"},
+{cat:"Extincteurs",code:"Classe B",norm:"Feux gras",desc:"Essence, alcool, solvants, plastiques",risk:"thermique"},
+{cat:"Extincteurs",code:"Classe C",norm:"Feux gazeux",desc:"Butane, propane, gaz de ville",risk:"thermique"},
+{cat:"Extincteurs",code:"Classe D",norm:"Feux métaux",desc:"Magnésium, aluminium, sodium",risk:"thermique"},
+{cat:"Extincteurs",code:"Classe F",norm:"Feux huiles",desc:"Huiles et graisses végétales/animales",risk:"thermique"},
+{cat:"Extincteurs",code:"Eau pulvérisée",norm:"Additif",desc:"Classes A et B (polyvalent)",risk:"thermique"},
+{cat:"Extincteurs",code:"Poudre ABC",norm:"Polyvalente",desc:"Classes A, B et C",risk:"thermique"},
+{cat:"Extincteurs",code:"CO2 (Dioxyde)",norm:"Neige carbonique",desc:"Classe B et risques électriques",risk:"elec"},
+{cat:"Extincteurs",code:"Mousse",norm:"Agent physique",desc:"Classes A et B (étouffement)",risk:"thermique"},
 
 // SPÉCIFIQUE
 {cat:"Spécifique",code:"EN 421",norm:"Rayonnement",desc:"Protection ionisante",risk:"spe"},
@@ -235,11 +240,14 @@ function render(){
   const q=document.getElementById("search").value.toLowerCase().trim(),container=document.getElementById("container");
   container.innerHTML="";
   const filtered=rawData.filter(i=>{
-    const mQ=!q||i.code.toLowerCase().includes(q)||i.norm.toLowerCase().includes(q)||i.desc.toLowerCase().includes(q);
+    const mQ=!q||i.code.toLowerCase().includes(q)||i.norm.toLowerCase().includes(q)||i.desc.toLowerCase().includes(q)||i.cat.toLowerCase().includes(q);
     const mC=!activeCat||i.cat===activeCat,mR=activeRisks.length===0||activeRisks.includes(i.risk);
     return mQ&&mC&&mR
   });
-  document.getElementById("count").textContent=filtered.length?"":filtered.length+" EPI trouvé"+(filtered.length>1?"s":"");
+  
+  // Correction Compteur v7.9.5
+  document.getElementById("count").textContent = filtered.length ? filtered.length+" EPI trouvé"+(filtered.length>1?"s":"") : "";
+  
   if(!filtered.length){container.innerHTML='<div class="no-result">Aucun résultat correspondant.</div>';return}
   const grouped={};filtered.forEach(i=>{if(!grouped[i.cat])grouped[i.cat]=[];grouped[i.cat].push(i)});
   Object.keys(ICONS).forEach(cat=>{
@@ -253,6 +261,10 @@ function render(){
   })
 }
 window.onload=()=>{counter=document.getElementById("count");searchInput=document.getElementById("search");container=document.getElementById("container");buildFilters();render();};
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
 </script>
 </body>
 </html>

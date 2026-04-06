@@ -1,28 +1,14 @@
-const cacheName = 'epi-master-v6.2';
+const cacheName = 'epi-master-v7.9.4';
 const assets = [
   './index.html',
   './manifest.json',
-  'https://cdn-icons-png.flaticon.com/512/785/785116.png'
+  'https://cdn-icons-png.flaticon.com/512/1063/1063303.png'
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(cacheName).then(cache => cache.addAll(assets))
-  );
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== cacheName).map(k => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
+  e.waitUntil(caches.open(cacheName).then(cache => cache.addAll(assets)));
 });
 
 self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(res => res || fetch(e.request))
-  );
+  e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
 });
