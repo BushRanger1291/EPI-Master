@@ -126,9 +126,10 @@ const RISK_META={
   thermique: {label:"Thermique",color:"#ef4444",bg:"#2d1010"},
   elec:      {label:"Électrique",color:"#3b82f6",bg:"#0d1d33"},
   bio:       {label:"Biologique",color:"#22c55e",bg:"#0c2016"},
-  bruit:     {label:"Bruit",     color:"#06b6d4",bg:"#051e26"},
-  chute:     {label:"Chute",     color:"#f97316",bg:"#2d1506"},
-  spe:       {label:"Spécifique",color:"#ec4899",bg:"#2d0e20"},
+  bruit:     {label:"Bruit",      color:"#06b6d4",bg:"#051e26"},
+  vibration: {label:"Vibration",  color:"#a78bfa",bg:"#1e1433"},
+  chute:     {label:"Chute",      color:"#f97316",bg:"#2d1506"},
+  spe:       {label:"Spécifique", color:"#ec4899",bg:"#2d0e20"},
 }
 
 const rawData=[
@@ -140,6 +141,7 @@ const rawData=[
 {cat:"Tête",code:"EN 14052",norm:"Casque haute performance",desc:"Protection impact élevé"},
 {cat:"Tête",code:"EN 16471",norm:"Casque feu forêt",desc:"Pompiers feux végétation",risk:"thermique"},
 {cat:"Tête",code:"EN 16473",norm:"Casque secours",desc:"Opérations secours technique"},
+{cat:"Tête",code:"EN 13911",norm:"Cagoule pompiers",desc:"Protection tête et cou contre chaleur et flammes",risk:"thermique"},
 // YEUX / VISAGE
 {cat:"Yeux",code:"EN 166",norm:"Protection oculaire",desc:"Norme générale lunettes",risk:"mecanique"},
 {cat:"Yeux",code:"EN 170",norm:"UV",desc:"Protection rayonnement ultraviolet",risk:"thermique"},
@@ -182,6 +184,7 @@ const rawData=[
 {cat:"Mains",code:"EN 381-7",norm:"Tronçonneuse",desc:"Protection scie à chaîne",risk:"mecanique"},
 {cat:"Mains",code:"EN 1082",norm:"Coupure",desc:"Protection couteaux",risk:"mecanique"},
 {cat:"Mains",code:"EN 659",norm:"Pompiers",desc:"Gants incendie",risk:"thermique"},
+{cat:"Mains",code:"EN ISO 10819",norm:"Anti-vibratile",desc:"Réduction vibrations transmises main-bras",risk:"vibration"},
 // CORPS
 {cat:"Corps",code:"EN ISO 20471",norm:"Haute visibilité",desc:"Classe 1 à 3",risk:"mecanique"},
 {cat:"Corps",code:"EN ISO 13688",norm:"Exigences générales",desc:"Base vêtements de protection"},
@@ -198,6 +201,11 @@ const rawData=[
 {cat:"Corps",code:"EN 381-5",norm:"Tronçonneuse",desc:"Protection scie à chaîne",risk:"mecanique"},
 {cat:"Corps",code:"EN 61482",norm:"Arc électrique",desc:"Protection arc flash",risk:"elec"},
 {cat:"Corps",code:"EN 510",norm:"Pièces en mouvement",desc:"Vêtements anti-accrochage",risk:"mecanique"},
+// PEAU
+{cat:"Peau",code:"EN 13758",norm:"Protection UV",desc:"Vêtements - Protection solaire UV cutanée Classe 1 et 2",risk:"thermique"},
+{cat:"Peau",code:"EN ISO 6942",norm:"Chaleur radiante",desc:"Protection peau contre rayonnement thermique",risk:"thermique"},
+{cat:"Peau",code:"EN 14605",norm:"Liquides chimiques",desc:"Protection cutanée projections liquides (Type 3 et 4)",risk:"chimie"},
+{cat:"Peau",code:"EN 374",norm:"Chimique / bio",desc:"Protection cutanée produits chimiques et microorganismes",risk:"chimie"},
 // PIEDS
 {cat:"Pieds",code:"EN ISO 20345",norm:"S1",desc:"Embout + antistatique"},
 {cat:"Pieds",code:"EN ISO 20345",norm:"S1P",desc:"S1 + anti perforation"},
@@ -227,10 +235,9 @@ const rawData=[
 {cat:"Spécifique",code:"EN 1146",norm:"Appareil évacuation",desc:"Évacuation fumées",risk:"chimie"},
 {cat:"Spécifique",code:"EN 943",norm:"Combinaison étanche",desc:"Protection chimique lourde",risk:"chimie"},
 {cat:"Spécifique",code:"EN 1073",norm:"Nucléaire",desc:"Protection particules radioactives",risk:"spe"},
-{cat:"Spécifique",code:"EN 141",norm:"Filtres gaz",desc:"Filtres respiratoires",risk:"chimie"},
-{cat:"Spécifique",code:"EN 143",norm:"Filtres particules",desc:"Protection poussières",risk:"bio"},
-{cat:"Spécifique",code:"EN 812",norm:"Casquette anti-heurt",desc:"Protection choc léger",risk:"mecanique"}
+{cat:"Spécifique",code:"EN 141",norm:"Filtres gaz",desc:"Filtres respiratoires ancienne génération",risk:"chimie"},
 ];
+
 
 const CATS=Object.keys(ICONS)
 let activeCat=null
