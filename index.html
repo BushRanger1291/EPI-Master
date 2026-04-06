@@ -9,36 +9,34 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="EPI Master">
 <link rel="manifest" href="./manifest.json">
-<title>EPI Master v6.2</title>
+<title>EPI Master v6.3</title>
 <style>
 :root{
   --bg:#050505;--card:#161616;--accent:#10b981;--text:#eee;--border:#222;
-  --risk-mec:#f59e0b;--risk-chi:#8b5cf6;--risk-the:#ef4444;
-  --risk-ele:#3b82f6;--risk-bio:#22c55e;--risk-bru:#06b6d4;
-  --risk-chu:#f97316;--risk-spe:#ec4899;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{
   font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);
-  padding:10px;padding-bottom:env(safe-area-inset-bottom);
-  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
+  padding:10px;
+  padding-bottom:env(safe-area-inset-bottom);
+  padding-left:env(safe-area-inset-left);
+  padding-right:env(safe-area-inset-right);
   overscroll-behavior:none;
 }
 
-/* SEARCH BAR */
+/* SEARCH */
 .search-wrap{position:relative;margin-bottom:10px}
 .search{
   width:100%;padding:10px 36px 10px 10px;
   background:#111;border:1px solid #333;color:#fff;
-  border-radius:6px;font-size:15px;outline:none;
-  -webkit-appearance:none;
+  border-radius:6px;font-size:15px;outline:none;-webkit-appearance:none;
 }
 .search:focus{border-color:var(--accent)}
 .clear-btn{
   position:absolute;right:8px;top:50%;transform:translateY(-50%);
-  background:none;border:none;color:#666;font-size:18px;cursor:pointer;
-  display:none;line-height:1;padding:2px 4px;min-width:30px;min-height:30px;
+  background:none;border:none;color:#666;font-size:20px;cursor:pointer;
+  display:none;line-height:1;padding:2px 6px;min-width:32px;min-height:32px;
 }
 .clear-btn:hover{color:#fff}
 
@@ -56,10 +54,9 @@ body{
 /* RISK FILTERS */
 .risk-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
 .risk-btn{
-  border:1px solid transparent;
-  padding:5px 12px;border-radius:20px;cursor:pointer;font-size:11px;
-  transition:all .2s;opacity:.5;font-weight:600;min-height:32px;
-  -webkit-tap-highlight-color:transparent;
+  border:1px solid transparent;padding:5px 12px;border-radius:20px;
+  cursor:pointer;font-size:11px;transition:all .2s;opacity:.5;font-weight:600;
+  min-height:32px;-webkit-tap-highlight-color:transparent;
 }
 .risk-btn:hover{opacity:.8}
 .risk-btn.active{opacity:1}
@@ -121,11 +118,11 @@ const ICONS={
 }
 
 const RISK_META={
-  mecanique:{label:"Mécanique",color:"#f59e0b",bg:"#2d2006"},
-  chimie:    {label:"Chimique", color:"#8b5cf6",bg:"#1e1330"},
-  thermique: {label:"Thermique",color:"#ef4444",bg:"#2d1010"},
-  elec:      {label:"Électrique",color:"#3b82f6",bg:"#0d1d33"},
-  bio:       {label:"Biologique",color:"#22c55e",bg:"#0c2016"},
+  mecanique: {label:"Mécanique",  color:"#f59e0b",bg:"#2d2006"},
+  chimie:    {label:"Chimique",   color:"#8b5cf6",bg:"#1e1330"},
+  thermique: {label:"Thermique",  color:"#ef4444",bg:"#2d1010"},
+  elec:      {label:"Électrique", color:"#3b82f6",bg:"#0d1d33"},
+  bio:       {label:"Biologique", color:"#22c55e",bg:"#0c2016"},
   bruit:     {label:"Bruit",      color:"#06b6d4",bg:"#051e26"},
   vibration: {label:"Vibration",  color:"#a78bfa",bg:"#1e1433"},
   chute:     {label:"Chute",      color:"#f97316",bg:"#2d1506"},
@@ -133,111 +130,222 @@ const RISK_META={
 }
 
 const rawData=[
-// TÊTE
-{cat:"Tête",code:"EN 397",norm:"Casque industrie",desc:"Protection contre chutes d'objets"},
-{cat:"Tête",code:"EN 812",norm:"Casquette anti-heurt",desc:"Protection chocs légers"},
-{cat:"Tête",code:"EN 12492",norm:"Casque travaux hauteur",desc:"Jugulaire obligatoire"},
-{cat:"Tête",code:"EN 50365",norm:"Casque isolant",desc:"Protection électrique basse tension",risk:"elec"},
-{cat:"Tête",code:"EN 14052",norm:"Casque haute performance",desc:"Protection impact élevé"},
-{cat:"Tête",code:"EN 16471",norm:"Casque feu forêt",desc:"Pompiers feux végétation",risk:"thermique"},
-{cat:"Tête",code:"EN 16473",norm:"Casque secours",desc:"Opérations secours technique"},
-{cat:"Tête",code:"EN 13911",norm:"Cagoule pompiers",desc:"Protection tête et cou contre chaleur et flammes",risk:"thermique"},
-// YEUX / VISAGE
-{cat:"Yeux",code:"EN 166",norm:"Protection oculaire",desc:"Norme générale lunettes",risk:"mecanique"},
-{cat:"Yeux",code:"EN 170",norm:"UV",desc:"Protection rayonnement ultraviolet",risk:"thermique"},
-{cat:"Yeux",code:"EN 171",norm:"IR",desc:"Protection infrarouge",risk:"thermique"},
-{cat:"Yeux",code:"EN 172",norm:"Solaire",desc:"Filtres solaires industriels",risk:"thermique"},
-{cat:"Yeux",code:"EN 169",norm:"Soudage",desc:"Filtres soudage",risk:"thermique"},
-{cat:"Yeux",code:"EN 175",norm:"Écran soudage",desc:"Protection faciale soudage",risk:"thermique"},
-{cat:"Yeux",code:"EN 379",norm:"Auto-obscurcissant",desc:"Filtres soudage automatique",risk:"thermique"},
-{cat:"Yeux",code:"EN 1731",norm:"Grillage",desc:"Protection grillagée",risk:"mecanique"},
-{cat:"Yeux",code:"EN 14458",norm:"Visières",desc:"Visières pour casques",risk:"mecanique"},
-{cat:"Yeux",code:"EN 207",norm:"Laser",desc:"Protection laser",risk:"spe"},
-{cat:"Yeux",code:"EN 208",norm:"Laser réglage",desc:"Alignement laser",risk:"spe"},
-// AUDITION
-{cat:"Audition",code:"EN 352-1",norm:"Casque antibruit",desc:"Protection auditive passive",risk:"bruit"},
-{cat:"Audition",code:"EN 352-2",norm:"Bouchons",desc:"Protection intra-auriculaire",risk:"bruit"},
-{cat:"Audition",code:"EN 352-3",norm:"Monté casque",desc:"Casque antibruit monté",risk:"bruit"},
-{cat:"Audition",code:"EN 352-4",norm:"Dépendant niveau",desc:"Atténuation active",risk:"bruit"},
-{cat:"Audition",code:"EN 352-5",norm:"Réduction active",desc:"Antibruit actif",risk:"bruit"},
-{cat:"Audition",code:"EN 352-6",norm:"Communication",desc:"Casque avec communication",risk:"bruit"},
-{cat:"Audition",code:"EN 352-7",norm:"Bouchons dépendant",desc:"Atténuation dépendante niveau",risk:"bruit"},
-{cat:"Audition",code:"EN 352-8",norm:"Audio",desc:"Entrée audio",risk:"bruit"},
-// RESPIRATOIRE
-{cat:"Respiratoire",code:"EN 149",norm:"FFP",desc:"Masques filtrants jetables FFP1 FFP2 FFP3",risk:"bio"},
-{cat:"Respiratoire",code:"EN 140",norm:"Demi masque",desc:"Masque filtrant avec cartouches",risk:"chimie"},
-{cat:"Respiratoire",code:"EN 136",norm:"Masque complet",desc:"Protection respiratoire intégrale",risk:"chimie"},
-{cat:"Respiratoire",code:"EN 143",norm:"Filtres particules",desc:"Filtres P1 P2 P3",risk:"bio"},
-{cat:"Respiratoire",code:"EN 14387",norm:"Filtres gaz",desc:"Cartouches ABEK",risk:"chimie"},
-{cat:"Respiratoire",code:"EN 12941",norm:"Ventilé",desc:"Appareil filtrant ventilé",risk:"chimie"},
-{cat:"Respiratoire",code:"EN 12942",norm:"Ventilé complet",desc:"Appareil ventilé complet",risk:"chimie"},
-{cat:"Respiratoire",code:"EN 137",norm:"ARI",desc:"Appareil respiratoire isolant",risk:"chimie"},
-{cat:"Respiratoire",code:"EN 14594",norm:"Adduction air",desc:"Alimentation air externe",risk:"chimie"},
-// MAINS
-{cat:"Mains",code:"EN 388",norm:"Mécanique",desc:"Abrasion coupure déchirure perforation",risk:"mecanique"},
-{cat:"Mains",code:"EN 374",norm:"Chimique",desc:"Protection produits chimiques et micro-organismes",risk:"chimie"},
-{cat:"Mains",code:"EN 407",norm:"Chaleur",desc:"Protection thermique flamme chaleur contact",risk:"thermique"},
-{cat:"Mains",code:"EN 511",norm:"Froid",desc:"Protection contre froid convectif et contact",risk:"thermique"},
-{cat:"Mains",code:"EN 60903",norm:"Électrique",desc:"Gants isolants électriques",risk:"elec"},
-{cat:"Mains",code:"EN 12477",norm:"Soudeur",desc:"Gants pour soudage",risk:"thermique"},
-{cat:"Mains",code:"EN 16350",norm:"Antistatique",desc:"Protection ATEX",risk:"elec"},
-{cat:"Mains",code:"EN 381-7",norm:"Tronçonneuse",desc:"Protection scie à chaîne",risk:"mecanique"},
-{cat:"Mains",code:"EN 1082",norm:"Coupure",desc:"Protection couteaux",risk:"mecanique"},
-{cat:"Mains",code:"EN 659",norm:"Pompiers",desc:"Gants incendie",risk:"thermique"},
-{cat:"Mains",code:"EN ISO 10819",norm:"Anti-vibratile",desc:"Réduction vibrations transmises main-bras",risk:"vibration"},
-// CORPS
-{cat:"Corps",code:"EN ISO 20471",norm:"Haute visibilité",desc:"Classe 1 à 3",risk:"mecanique"},
-{cat:"Corps",code:"EN ISO 13688",norm:"Exigences générales",desc:"Base vêtements de protection"},
-{cat:"Corps",code:"EN 343",norm:"Pluie",desc:"Protection contre intempéries",risk:"thermique"},
-{cat:"Corps",code:"EN 342",norm:"Froid",desc:"Protection froid intense",risk:"thermique"},
-{cat:"Corps",code:"EN 14058",norm:"Froid modéré",desc:"Protection froid léger",risk:"thermique"},
-{cat:"Corps",code:"EN ISO 11612",norm:"Chaleur",desc:"Protection flammes et chaleur",risk:"thermique"},
-{cat:"Corps",code:"EN ISO 11611",norm:"Soudage",desc:"Protection soudage",risk:"thermique"},
-{cat:"Corps",code:"EN 1149",norm:"Antistatique",desc:"Protection ATEX",risk:"elec"},
-{cat:"Corps",code:"EN 13034",norm:"Chimique Type 6",desc:"Protection chimique légère",risk:"chimie"},
-{cat:"Corps",code:"EN 14605",norm:"Chimique Type 3-4",desc:"Protection chimique étanche",risk:"chimie"},
-{cat:"Corps",code:"EN 14126",norm:"Biologique",desc:"Protection agents infectieux",risk:"bio"},
-{cat:"Corps",code:"EN 469",norm:"Pompiers",desc:"Vêtements incendie",risk:"thermique"},
-{cat:"Corps",code:"EN 381-5",norm:"Tronçonneuse",desc:"Protection scie à chaîne",risk:"mecanique"},
-{cat:"Corps",code:"EN 61482",norm:"Arc électrique",desc:"Protection arc flash",risk:"elec"},
-{cat:"Corps",code:"EN 510",norm:"Pièces en mouvement",desc:"Vêtements anti-accrochage",risk:"mecanique"},
-// PEAU
-{cat:"Peau",code:"EN 13758",norm:"Protection UV",desc:"Vêtements - Protection solaire UV cutanée Classe 1 et 2",risk:"thermique"},
-{cat:"Peau",code:"EN ISO 6942",norm:"Chaleur radiante",desc:"Protection peau contre rayonnement thermique",risk:"thermique"},
-{cat:"Peau",code:"EN 14605",norm:"Liquides chimiques",desc:"Protection cutanée projections liquides (Type 3 et 4)",risk:"chimie"},
-{cat:"Peau",code:"EN 374",norm:"Chimique / bio",desc:"Protection cutanée produits chimiques et microorganismes",risk:"chimie"},
-// PIEDS
-{cat:"Pieds",code:"EN ISO 20345",norm:"S1",desc:"Embout + antistatique"},
-{cat:"Pieds",code:"EN ISO 20345",norm:"S1P",desc:"S1 + anti perforation"},
-{cat:"Pieds",code:"EN ISO 20345",norm:"S2",desc:"Résistance eau"},
-{cat:"Pieds",code:"EN ISO 20345",norm:"S3",desc:"S2 + crampons"},
-{cat:"Pieds",code:"EN ISO 20345",norm:"S4",desc:"Bottes polymère"},
-{cat:"Pieds",code:"EN ISO 20345",norm:"S5",desc:"S4 + anti perforation"},
-{cat:"Pieds",code:"EN ISO 20347",norm:"O1",desc:"Sans coque"},
-{cat:"Pieds",code:"EN ISO 20347",norm:"O2",desc:"Résistant eau"},
-{cat:"Pieds",code:"EN ISO 20347",norm:"O3",desc:"Terrain"},
-{cat:"Pieds",code:"EN 61340",norm:"ESD",desc:"ATEX",risk:"elec"},
-// CHUTE
-{cat:"Chute",code:"EN 361",norm:"Harnais",desc:"Arrêt de chute",risk:"chute"},
-{cat:"Chute",code:"EN 358",norm:"Maintien",desc:"Positionnement travail",risk:"chute"},
-{cat:"Chute",code:"EN 355",norm:"Absorbeur",desc:"Absorption énergie",risk:"chute"},
-{cat:"Chute",code:"EN 354",norm:"Longe",desc:"Longes de maintien",risk:"chute"},
-{cat:"Chute",code:"EN 353-1",norm:"Antichute rail",desc:"Support rigide",risk:"chute"},
-{cat:"Chute",code:"EN 353-2",norm:"Antichute corde",desc:"Support flexible",risk:"chute"},
-{cat:"Chute",code:"EN 360",norm:"Antichute rappel",desc:"Enrouleur automatique",risk:"chute"},
-{cat:"Chute",code:"EN 362",norm:"Connecteurs",desc:"Mousquetons",risk:"chute"},
-{cat:"Chute",code:"EN 363",norm:"Systèmes",desc:"Systèmes antichute",risk:"chute"},
-{cat:"Chute",code:"EN 795",norm:"Ancrage",desc:"Points d'ancrage",risk:"chute"},
-{cat:"Chute",code:"EN 813",norm:"Ceinture",desc:"Travaux sur corde",risk:"chute"},
-{cat:"Chute",code:"EN 1497",norm:"Sauvetage",desc:"Harnais sauvetage",risk:"chute"},
-// SPÉCIFIQUE
-{cat:"Spécifique",code:"EN 421",norm:"Rayonnement",desc:"Protection ionisante",risk:"spe"},
-{cat:"Spécifique",code:"EN 1146",norm:"Appareil évacuation",desc:"Évacuation fumées",risk:"chimie"},
-{cat:"Spécifique",code:"EN 943",norm:"Combinaison étanche",desc:"Protection chimique lourde",risk:"chimie"},
-{cat:"Spécifique",code:"EN 1073",norm:"Nucléaire",desc:"Protection particules radioactives",risk:"spe"},
-{cat:"Spécifique",code:"EN 141",norm:"Filtres gaz",desc:"Filtres respiratoires ancienne génération",risk:"chimie"},
-];
 
+// ─── TÊTE ───────────────────────────────────────────────────────────────────
+{cat:"Tête",code:"EN 397",norm:"Casque industrie",
+  desc:"Protection contre chutes d'objets — résistance choc 5kN, anti-perforation, résistance flamme"},
+{cat:"Tête",code:"EN 812",norm:"Casquette anti-heurt",
+  desc:"Protection lorsque la tête heurte un objet fixe (usage intérieur) — ne protège pas des chutes d'objets"},
+{cat:"Tête",code:"EN 12492",norm:"Casque travaux hauteur / alpinisme",
+  desc:"Chocs multi-directionnels (vertical, latéral, avant, arrière) — jugulaire résistance 20 daN obligatoire"},
+{cat:"Tête",code:"EN 50365",norm:"Casque isolant électricien",
+  desc:"Protection électrique basse tension jusqu'à 1000V CA / 1500V CC — aucun composant métallique",risk:"elec"},
+{cat:"Tête",code:"EN 14052",norm:"Casque haute performance",
+  desc:"Protection renforcée multi-directionnelle + résistance à la pénétration d'une lame plate",risk:"mecanique"},
+{cat:"Tête",code:"EN 16471",norm:"Casque feu de forêt",
+  desc:"Protection tête pompiers feux de végétation",risk:"thermique"},
+{cat:"Tête",code:"EN 16473",norm:"Casque secours technique",
+  desc:"Opérations de secours et sauvetage technique"},
+{cat:"Tête",code:"EN 13911",norm:"Cagoule pompiers",
+  desc:"Protection tête et cou contre chaleur et flammes pour sapeurs-pompiers",risk:"thermique"},
+
+// ─── YEUX / VISAGE ──────────────────────────────────────────────────────────
+{cat:"Yeux",code:"EN 166",norm:"Protection oculaire — norme générale",
+  desc:"Cadre de référence pour toutes les lunettes et protections oculaires individuelles",risk:"mecanique"},
+{cat:"Yeux",code:"EN 170",norm:"Filtres UV",
+  desc:"Protection contre rayonnement ultraviolet — marquage numérique selon la transmission",risk:"thermique"},
+{cat:"Yeux",code:"EN 171",norm:"Filtres infrarouge",
+  desc:"Protection contre rayonnement infrarouge (forges, fonderies, soudage)",risk:"thermique"},
+{cat:"Yeux",code:"EN 172",norm:"Filtres solaires industriels",
+  desc:"Protection contre l'éblouissement solaire en milieu industriel (conducteurs, travaux extérieurs)",risk:"thermique"},
+{cat:"Yeux",code:"EN 169",norm:"Filtres pour soudage",
+  desc:"Nuances de filtres pour soudage à l'arc et soudage gaz (nuances 1 à 16)",risk:"thermique"},
+{cat:"Yeux",code:"EN 175",norm:"Écran de protection soudage",
+  desc:"Protection oculaire et faciale complète lors des opérations de soudage et techniques connexes",risk:"thermique"},
+{cat:"Yeux",code:"EN 379",norm:"Filtres auto-obscurcissants",
+  desc:"Filtres électro-optiques à assombrissement automatique pour soudage",risk:"thermique"},
+{cat:"Yeux",code:"EN 1731",norm:"Protection grillagée",
+  desc:"Protecteurs oculaires et faciaux de type grillagé (tronçonnage, débroussaillage)",risk:"mecanique"},
+{cat:"Yeux",code:"EN 14458",norm:"Visières pour casques",
+  desc:"Visières de haute performance montées sur casques de protection industriels",risk:"mecanique"},
+{cat:"Yeux",code:"EN 207",norm:"Filtres laser",
+  desc:"Protection contre les rayonnements laser — filtre testé à la longueur d'onde du laser",risk:"spe"},
+{cat:"Yeux",code:"EN 208",norm:"Filtres réglage laser",
+  desc:"Protection lors du réglage de lasers de faible puissance (classes 1 à 4)",risk:"spe"},
+
+// ─── AUDITION ───────────────────────────────────────────────────────────────
+{cat:"Audition",code:"EN 352-1",norm:"Casque antibruit passif",
+  desc:"Coquilles protège-oreilles à atténuation passive — SNR indiqué en dB",risk:"bruit"},
+{cat:"Audition",code:"EN 352-2",norm:"Bouchons d'oreilles",
+  desc:"Bouchons intra-auriculaires à atténuation passive — H, M, L, SNR en dB",risk:"bruit"},
+{cat:"Audition",code:"EN 352-3",norm:"Coquilles sur casque",
+  desc:"Coquilles antibruit montées directement sur casque de sécurité industriel",risk:"bruit"},
+{cat:"Audition",code:"EN 352-4",norm:"Atténuation dépendante du niveau",
+  desc:"Atténuation active qui s'adapte selon le niveau sonore ambiant",risk:"bruit"},
+{cat:"Audition",code:"EN 352-5",norm:"Réduction active du bruit",
+  desc:"Antibruit actif (ANC) par signal électronique anti-phase",risk:"bruit"},
+{cat:"Audition",code:"EN 352-6",norm:"Coquilles avec liaison radio",
+  desc:"Coquilles antibruit intégrant une liaison de communication audio",risk:"bruit"},
+{cat:"Audition",code:"EN 352-7",norm:"Bouchons dépendant du niveau",
+  desc:"Bouchons à atténuation passive adaptée au niveau sonore",risk:"bruit"},
+{cat:"Audition",code:"EN 352-8",norm:"Coquilles avec entrée audio",
+  desc:"Coquilles antibruit avec entrée audio filaire (musique, radio)",risk:"bruit"},
+
+// ─── RESPIRATOIRE ───────────────────────────────────────────────────────────
+{cat:"Respiratoire",code:"EN 149",norm:"Masque FFP jetable",
+  desc:"Demi-masque filtrant à usage unique contre aérosols — FFP1 (80%), FFP2 (94%), FFP3 (99%)",risk:"bio"},
+{cat:"Respiratoire",code:"EN 140",norm:"Demi-masque réutilisable",
+  desc:"Demi-masque et quart de masque réutilisables pour usage avec filtres à particules ou gaz",risk:"chimie"},
+{cat:"Respiratoire",code:"EN 136",norm:"Masque complet réutilisable",
+  desc:"Masque couvrant yeux, nez et bouche, 3 classes — usage avec filtres à particules ou gaz",risk:"chimie"},
+{cat:"Respiratoire",code:"EN 405",norm:"Demi-masque filtrant à soupape",
+  desc:"Demi-masque filtrant à soupape expiratoire contre gaz et/ou particules",risk:"chimie"},
+{cat:"Respiratoire",code:"EN 143",norm:"Filtres à particules",
+  desc:"Filtres interchangeables P1 (poussières), P2 (fumées toxiques), P3 (très haute filtration)",risk:"bio"},
+{cat:"Respiratoire",code:"EN 14387",norm:"Filtres antigaz et combinés",
+  desc:"Cartouches gaz ABEK — A (vapeurs organiques), B (gaz inorg.), E (SO2), K (ammoniac)",risk:"chimie"},
+{cat:"Respiratoire",code:"EN 12941",norm:"Ventilation assistée casque/cagoule",
+  desc:"Appareil filtrant à ventilation assistée avec casque ou cagoule contre particules, gaz et vapeurs",risk:"chimie"},
+{cat:"Respiratoire",code:"EN 12942",norm:"Ventilation assistée masque",
+  desc:"Appareil filtrant à ventilation assistée avec masque complet ou demi-masque",risk:"chimie"},
+{cat:"Respiratoire",code:"EN 137",norm:"ARI autonome circuit ouvert",
+  desc:"Appareil respiratoire isolant autonome à air comprimé à circuit ouvert",risk:"chimie"},
+{cat:"Respiratoire",code:"EN 14594",norm:"Adduction d'air comprimé",
+  desc:"Appareil isolant à adduction d'air comprimé à débit continu (remplace EN 139)",risk:"chimie"},
+{cat:"Respiratoire",code:"EN 1146",norm:"Appareil d'évacuation",
+  desc:"Appareil autonome à circuit ouvert avec cagoule pour évacuation d'urgence en atmosphère toxique",risk:"chimie"},
+
+// ─── MAINS ──────────────────────────────────────────────────────────────────
+{cat:"Mains",code:"EN 388",norm:"Risques mécaniques",
+  desc:"Abrasion (niv. 0-4), coupure (0-5), déchirure (0-4), perforation (0-4), impact (P/F)",risk:"mecanique"},
+{cat:"Mains",code:"EN 374",norm:"Risques chimiques et biologiques",
+  desc:"Types A/B/C selon temps de passage — étanchéité, perméation, dégradation, micro-organismes",risk:"chimie"},
+{cat:"Mains",code:"EN 407",norm:"Risques thermiques",
+  desc:"6 critères : inflammabilité, chaleur de contact, convective, radiante, projections petites/grandes",risk:"thermique"},
+{cat:"Mains",code:"EN 511",norm:"Risque froid",
+  desc:"Froid convectif (niv. 0-4), froid de contact (niv. 0-4), imperméabilité eau (0-1) jusqu'à -50°C",risk:"thermique"},
+{cat:"Mains",code:"EN 60903",norm:"Risques électriques",
+  desc:"Gants isolants 6 classes — Classe 00 (500V) à Classe 4 (40 000V) CA",risk:"elec"},
+{cat:"Mains",code:"EN 12477",norm:"Soudage",
+  desc:"Type A (protection élevée, dextérité moyenne) — Type B (dextérité élevée, soudage TIG)",risk:"thermique"},
+{cat:"Mains",code:"EN 16350",norm:"Antistatique ATEX",
+  desc:"Dissipation électrostatique pour zones explosibles ATEX",risk:"elec"},
+{cat:"Mains",code:"EN 381-7",norm:"Protection tronçonneuse",
+  desc:"Gants contre coupure scie à chaîne — en cours de remplacement par EN ISO 11393-4",risk:"mecanique"},
+{cat:"Mains",code:"EN 1082",norm:"Protection couteaux et lames",
+  desc:"Protection contre les coupures de couteaux à main (industrie alimentaire, abattoirs)",risk:"mecanique"},
+{cat:"Mains",code:"EN 659",norm:"Gants pompiers",
+  desc:"Gants de protection pour sapeurs-pompiers — résistance flamme, chaleur, eau",risk:"thermique"},
+{cat:"Mains",code:"EN ISO 10819",norm:"Anti-vibratile",
+  desc:"Réduction des vibrations transmises au système main-bras par les outils vibrants",risk:"vibration"},
+
+// ─── CORPS ──────────────────────────────────────────────────────────────────
+{cat:"Corps",code:"EN ISO 20471",norm:"Haute visibilité",
+  desc:"Classe 1 (faible risque) à Classe 3 (risque élevé) — surface fluorescente + rétroréfléchissante",risk:"mecanique"},
+{cat:"Corps",code:"EN ISO 13688",norm:"Exigences générales vêtements",
+  desc:"Norme de base obligatoire pour tous les vêtements de protection (ergonomie, marquage, entretien)"},
+{cat:"Corps",code:"EN 343",norm:"Intempéries (pluie/vent)",
+  desc:"Résistance à la pénétration eau (classe 1-3) et perméabilité à la vapeur d'eau (classe 1-3)",risk:"thermique"},
+{cat:"Corps",code:"EN 342",norm:"Froid intense",
+  desc:"Ensemble de protection contre le froid — résistance thermique et perméabilité à l'air mesurées",risk:"thermique"},
+{cat:"Corps",code:"EN 14058",norm:"Froid modéré",
+  desc:"Vêtement contre les effets du froid pour températures entre -5°C et +10°C environ",risk:"thermique"},
+{cat:"Corps",code:"EN ISO 11612",norm:"Chaleur et flammes",
+  desc:"Codes A (flamme), B (convection), C (rayonnement), D (projections alu), E (projections fonte), F (contact)",risk:"thermique"},
+{cat:"Corps",code:"EN ISO 11611",norm:"Soudage et techniques connexes",
+  desc:"Classe 1 (soudage gaz, faible projection) — Classe 2 (soudage à l'arc, projections importantes)",risk:"thermique"},
+{cat:"Corps",code:"EN 1149",norm:"Propriétés électrostatiques",
+  desc:"Dissipation électrostatique pour zones ATEX — mesure résistivité de surface et verticale",risk:"elec"},
+{cat:"Corps",code:"EN 13034",norm:"Chimique Type 6",
+  desc:"Type 6 — protection contre projections légères de liquides chimiques (pulvérisations fines)",risk:"chimie"},
+{cat:"Corps",code:"EN 14605",norm:"Chimique Type 3 et 4",
+  desc:"Type 3 (jet liquide étanche) et Type 4 (aérosols et pulvérisations — combinaisons étanches)",risk:"chimie"},
+{cat:"Corps",code:"EN 14126",norm:"Agents biologiques infectieux",
+  desc:"Protection contre agents infectieux — complète les Types 3/4/5/6 avec test bactéries et virus",risk:"bio"},
+{cat:"Corps",code:"EN 469",norm:"Vêtements pompiers",
+  desc:"Tenue de feu sapeurs-pompiers — performances thermiques, résistance flamme, étanchéité",risk:"thermique"},
+{cat:"Corps",code:"EN 381-5",norm:"Protection tronçonneuse",
+  desc:"Pantalon/jambières contre coupure scie à chaîne — Classes 0 à 3 selon vitesse de chaîne",risk:"mecanique"},
+{cat:"Corps",code:"EN IEC 61482",norm:"Arc électrique",
+  desc:"Protection contre les effets thermiques d'un arc électrique — Classes 1 et 2",risk:"elec"},
+{cat:"Corps",code:"EN 510",norm:"Pièces en mouvement",
+  desc:"Vêtements anti-accrochage pour travail à proximité de pièces rotatives non protégées",risk:"mecanique"},
+{cat:"Corps",code:"EN 943",norm:"Combinaison gazetanche",
+  desc:"Type 1a (circuit fermé) et 1b (circuit ouvert) — protection totale contre gaz et liquides dangereux",risk:"chimie"},
+
+// ─── PIEDS ──────────────────────────────────────────────────────────────────
+{cat:"Pieds",code:"EN ISO 20345",norm:"S1",
+  desc:"Exigences de base (SB) + antistatique + talon absorbeur d'énergie + talon fermé"},
+{cat:"Pieds",code:"EN ISO 20345",norm:"S1P",
+  desc:"S1 + insert anti-perforation (métallique P, ou non-métallique PL/PS)"},
+{cat:"Pieds",code:"EN ISO 20345",norm:"S2",
+  desc:"S1 + résistance pénétration et absorption eau de la tige (WPA)"},
+{cat:"Pieds",code:"EN ISO 20345",norm:"S3",
+  desc:"S2 + insert anti-perforation + semelle profilée (crantée)"},
+{cat:"Pieds",code:"EN ISO 20345",norm:"S4",
+  desc:"Botte tout polymère (caoutchouc/PVC) — équivalent S1 pour environnements très humides"},
+{cat:"Pieds",code:"EN ISO 20345",norm:"S5",
+  desc:"S4 + insert anti-perforation + semelle profilée"},
+{cat:"Pieds",code:"EN ISO 20345",norm:"S6",
+  desc:"S2 + résistance totale à la pénétration eau de la chaussure (WR) — nouveau marquage 2022"},
+{cat:"Pieds",code:"EN ISO 20345",norm:"S7",
+  desc:"S3 + résistance totale à la pénétration eau (WR) — nouveau marquage 2022"},
+{cat:"Pieds",code:"EN ISO 20347",norm:"O1",
+  desc:"Chaussure de travail sans embout de protection — antistatique + talon absorbeur d'énergie"},
+{cat:"Pieds",code:"EN ISO 20347",norm:"O2",
+  desc:"O1 + résistance pénétration et absorption eau de la tige (WPA)"},
+{cat:"Pieds",code:"EN ISO 20347",norm:"O3",
+  desc:"O2 + insert anti-perforation + semelle profilée"},
+{cat:"Pieds",code:"EN 61340",norm:"ESD",
+  desc:"Chaussures et semelles dissipatrices électrostatiques pour zones ATEX",risk:"elec"},
+
+// ─── CHUTE ──────────────────────────────────────────────────────────────────
+{cat:"Chute",code:"EN 361",norm:"Harnais antichute",
+  desc:"Arrêt de chute — répartit les forces sur cuisses, bassin, poitrine et épaules",risk:"chute"},
+{cat:"Chute",code:"EN 358",norm:"Ceinture de maintien",
+  desc:"Positionnement et retenue au poste de travail — ne convient pas à l'arrêt de chute",risk:"chute"},
+{cat:"Chute",code:"EN 355",norm:"Absorbeur d'énergie",
+  desc:"Déchirure progressive limitant la force de choc à 6 kN maximum",risk:"chute"},
+{cat:"Chute",code:"EN 354",norm:"Longe",
+  desc:"Liaison entre le harnais et le point d'ancrage — longueur max 2 m",risk:"chute"},
+{cat:"Chute",code:"EN 353-1",norm:"Antichute à rail rigide",
+  desc:"Dispositif antichute mobile sur support d'ancrage rigide (rail acier/aluminium)",risk:"chute"},
+{cat:"Chute",code:"EN 353-2",norm:"Antichute à corde",
+  desc:"Dispositif antichute mobile sur support d'ancrage flexible (corde)",risk:"chute"},
+{cat:"Chute",code:"EN 360",norm:"Enrouleur antichute",
+  desc:"Antichute à rappel automatique — se bloque en cas de chute par mécanisme centrifuge",risk:"chute"},
+{cat:"Chute",code:"EN 362",norm:"Connecteurs",
+  desc:"Mousquetons et connecteurs — classes B (basique), T (travaux), D (directionnel)",risk:"chute"},
+{cat:"Chute",code:"EN 363",norm:"Systèmes antichute",
+  desc:"Systèmes complets — combinaison harnais + longe + absorbeur/enrouleur + ancrage",risk:"chute"},
+{cat:"Chute",code:"EN 795",norm:"Dispositifs d'ancrage",
+  desc:"Points d'ancrage fixes — Classes A (structure), B (portable), C (ligne de vie horizontale)",risk:"chute"},
+{cat:"Chute",code:"EN 813",norm:"Harnais d'assise",
+  desc:"Harnais tour de cuisse pour travaux sur corde et positionnement",risk:"chute"},
+{cat:"Chute",code:"EN 1497",norm:"Harnais de sauvetage",
+  desc:"Harnais de récupération et sauvetage de personne",risk:"chute"},
+
+// ─── PEAU ───────────────────────────────────────────────────────────────────
+{cat:"Peau",code:"EN 13758",norm:"Protection UV solaire",
+  desc:"Vêtements protégeant la peau contre les UV — Classe 1 (UPF ≥ 40) et Classe 2 (UPF ≥ 150)",risk:"thermique"},
+{cat:"Peau",code:"EN ISO 6942",norm:"Chaleur radiante",
+  desc:"Évaluation de la protection cutanée contre la chaleur radiante — méthode A et B",risk:"thermique"},
+
+// ─── SPÉCIFIQUE ─────────────────────────────────────────────────────────────
+{cat:"Spécifique",code:"EN 421",norm:"Rayonnements ionisants",
+  desc:"Protection contre les rayonnements ionisants et la contamination radioactive",risk:"spe"},
+{cat:"Spécifique",code:"EN 1073",norm:"Contamination radioactive",
+  desc:"Vêtements contre les particules radioactives — Type 1 (non ventilé) et Type 2 (ventilé)",risk:"spe"},
+{cat:"Spécifique",code:"EN 207",norm:"Filtres laser (yeux)",
+  desc:"Lunettes filtrantes laser — testées à la longueur d'onde et puissance du laser utilisé",risk:"spe"},
+{cat:"Spécifique",code:"EN 208",norm:"Filtres réglage laser",
+  desc:"Lunettes pour réglage de laser — classes RM 1 à RM 5 selon puissance",risk:"spe"},
+{cat:"Spécifique",code:"EN 14387",norm:"Filtres gaz / combinés",
+  desc:"Filtres ABEK combinés pour masque demi-face ou complet — 3 classes de capacité",risk:"chimie"},
+{cat:"Spécifique",code:"EN 141",norm:"Filtres antigaz (ancienne norme)",
+  desc:"Remplacée par EN 14387 — filtres anti-gaz et filtres combinés (maintenue pour référence)",risk:"chimie"},
+
+];
 
 const CATS=Object.keys(ICONS)
 let activeCat=null
@@ -293,7 +401,7 @@ function render(){
   const container=document.getElementById("container")
   container.innerHTML=""
 
-  let filtered=rawData.filter(item=>{
+  const filtered=rawData.filter(item=>{
     const matchQ=!q||(
       item.code.toLowerCase().includes(q)||
       item.norm.toLowerCase().includes(q)||
@@ -350,9 +458,9 @@ if('serviceWorker' in navigator){
   })
 }
 
-// Bannière offline
-window.addEventListener('online', ()=>{ document.getElementById("offlineBanner").style.display="none" })
-window.addEventListener('offline',()=>{ document.getElementById("offlineBanner").style.display="block" })
+// Bannière hors ligne
+window.addEventListener('online', ()=>{document.getElementById("offlineBanner").style.display="none"})
+window.addEventListener('offline',()=>{document.getElementById("offlineBanner").style.display="block"})
 
 buildFilters()
 render()
