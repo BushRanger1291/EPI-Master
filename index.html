@@ -1,54 +1,145 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>EPI Master v6.1</title>
-
+<meta name="theme-color" content="#10b981">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="EPI Master">
+<link rel="manifest" href="./manifest.json">
+<title>EPI Master v6.2</title>
 <style>
-:root{--bg:#050505;--card:#111;--accent:#10b981;--text:#eee;--border:#222}
-body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);margin:0;padding:10px}
-.search{width:100%;padding:10px;background:#111;border:1px solid #333;color:#fff;margin-bottom:10px}
-.card{background:#161616;border-left:4px solid #10b981;padding:10px;margin-bottom:8px;border-radius:6px}
-.code{font-weight:bold}
+:root{
+  --bg:#050505;--card:#161616;--accent:#10b981;--text:#eee;--border:#222;
+  --risk-mec:#f59e0b;--risk-chi:#8b5cf6;--risk-the:#ef4444;
+  --risk-ele:#3b82f6;--risk-bio:#22c55e;--risk-bru:#06b6d4;
+  --risk-chu:#f97316;--risk-spe:#ec4899;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);
+  padding:10px;padding-bottom:env(safe-area-inset-bottom);
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
+  overscroll-behavior:none;
+}
+
+/* SEARCH BAR */
+.search-wrap{position:relative;margin-bottom:10px}
+.search{
+  width:100%;padding:10px 36px 10px 10px;
+  background:#111;border:1px solid #333;color:#fff;
+  border-radius:6px;font-size:15px;outline:none;
+  -webkit-appearance:none;
+}
+.search:focus{border-color:var(--accent)}
+.clear-btn{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:#666;font-size:18px;cursor:pointer;
+  display:none;line-height:1;padding:2px 4px;min-width:30px;min-height:30px;
+}
+.clear-btn:hover{color:#fff}
+
+/* CATEGORY FILTERS */
+.cat-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.cat-btn{
+  background:#111;border:1px solid #333;color:#aaa;
+  padding:7px 12px;border-radius:20px;cursor:pointer;font-size:12px;
+  transition:all .2s;white-space:nowrap;min-height:36px;
+  -webkit-tap-highlight-color:transparent;
+}
+.cat-btn:hover{border-color:#555;color:#fff}
+.cat-btn.active{background:var(--accent);border-color:var(--accent);color:#000;font-weight:600}
+
+/* RISK FILTERS */
+.risk-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.risk-btn{
+  border:1px solid transparent;
+  padding:5px 12px;border-radius:20px;cursor:pointer;font-size:11px;
+  transition:all .2s;opacity:.5;font-weight:600;min-height:32px;
+  -webkit-tap-highlight-color:transparent;
+}
+.risk-btn:hover{opacity:.8}
+.risk-btn.active{opacity:1}
+
+/* COUNT */
+.count{font-size:11px;color:#666;margin-bottom:8px}
+
+/* CARDS */
+.card{
+  background:var(--card);border-left:4px solid var(--accent);
+  padding:10px 10px 10px 12px;margin-bottom:8px;border-radius:6px;
+  display:flex;flex-direction:column;gap:4px;
+}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
+.code{font-weight:bold;font-size:14px}
 .norm{font-size:.7rem;color:#999}
-.desc{font-size:.8rem;margin-top:4px}
+.desc{font-size:.8rem;margin-top:2px;color:#ccc}
+.badge{
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;
+  white-space:nowrap;flex-shrink:0;align-self:flex-start;
+}
+
+/* SECTION HEADER */
+.section-header{
+  font-size:12px;font-weight:700;color:#555;text-transform:uppercase;
+  letter-spacing:.08em;margin:14px 0 6px;padding-bottom:4px;
+  border-bottom:1px solid #1e1e1e;
+}
+
+/* NO RESULT */
+.no-result{text-align:center;color:#555;padding:40px 0;font-size:14px}
+
+/* OFFLINE BANNER */
+.offline-banner{
+  display:none;background:#7f1d1d;color:#fca5a5;
+  font-size:12px;text-align:center;padding:6px;border-radius:6px;margin-bottom:8px;
+}
 </style>
-
 </head>
-
 <body>
 
-<input id="search" class="search" placeholder="Recherche..." oninput="filter()">
+<div class="offline-banner" id="offlineBanner">Hors ligne — données en cache</div>
+
+<div class="search-wrap">
+  <input id="search" class="search" placeholder="Rechercher un EPI, une norme..." oninput="onSearch()">
+  <button class="clear-btn" id="clearBtn" onclick="clearSearch()">×</button>
+</div>
+
+<div class="cat-filters" id="catFilters"></div>
+<div class="risk-filters" id="riskFilters"></div>
+<div class="count" id="count"></div>
 <div id="container"></div>
 
 <script>
-
 const ICONS={
-"Tête":"🪖",
-"Yeux":"🥽",
-"Audition":"🎧",
-"Respiratoire":"😷",
-"Mains":"🧤",
-"Corps":"🦺",
-"Pieds":"👟",
-"Chute":"🪢",
-"Peau":"🧴",
-"Spécifique":"☢️"
+  "Tête":"🪖","Yeux":"🥽","Audition":"🎧","Respiratoire":"😷",
+  "Mains":"🧤","Corps":"🦺","Pieds":"👟","Chute":"🪢",
+  "Peau":"🧴","Spécifique":"☢️"
+}
+
+const RISK_META={
+  mecanique:{label:"Mécanique",color:"#f59e0b",bg:"#2d2006"},
+  chimie:    {label:"Chimique", color:"#8b5cf6",bg:"#1e1330"},
+  thermique: {label:"Thermique",color:"#ef4444",bg:"#2d1010"},
+  elec:      {label:"Électrique",color:"#3b82f6",bg:"#0d1d33"},
+  bio:       {label:"Biologique",color:"#22c55e",bg:"#0c2016"},
+  bruit:     {label:"Bruit",     color:"#06b6d4",bg:"#051e26"},
+  chute:     {label:"Chute",     color:"#f97316",bg:"#2d1506"},
+  spe:       {label:"Spécifique",color:"#ec4899",bg:"#2d0e20"},
 }
 
 const rawData=[
-
 // TÊTE
 {cat:"Tête",code:"EN 397",norm:"Casque industrie",desc:"Protection contre chutes d'objets"},
 {cat:"Tête",code:"EN 812",norm:"Casquette anti-heurt",desc:"Protection chocs légers"},
 {cat:"Tête",code:"EN 12492",norm:"Casque travaux hauteur",desc:"Jugulaire obligatoire"},
-{cat:"Tête",code:"EN 50365",norm:"Casque isolant",desc:"Protection électrique basse tension"},
+{cat:"Tête",code:"EN 50365",norm:"Casque isolant",desc:"Protection électrique basse tension",risk:"elec"},
 {cat:"Tête",code:"EN 14052",norm:"Casque haute performance",desc:"Protection impact élevé"},
-{cat:"Tête",code:"EN 16471",norm:"Casque feu forêt",desc:"Pompiers feux végétation"},
+{cat:"Tête",code:"EN 16471",norm:"Casque feu forêt",desc:"Pompiers feux végétation",risk:"thermique"},
 {cat:"Tête",code:"EN 16473",norm:"Casque secours",desc:"Opérations secours technique"},
-
 // YEUX / VISAGE
 {cat:"Yeux",code:"EN 166",norm:"Protection oculaire",desc:"Norme générale lunettes",risk:"mecanique"},
 {cat:"Yeux",code:"EN 170",norm:"UV",desc:"Protection rayonnement ultraviolet",risk:"thermique"},
@@ -61,7 +152,6 @@ const rawData=[
 {cat:"Yeux",code:"EN 14458",norm:"Visières",desc:"Visières pour casques",risk:"mecanique"},
 {cat:"Yeux",code:"EN 207",norm:"Laser",desc:"Protection laser",risk:"spe"},
 {cat:"Yeux",code:"EN 208",norm:"Laser réglage",desc:"Alignement laser",risk:"spe"},
-
 // AUDITION
 {cat:"Audition",code:"EN 352-1",norm:"Casque antibruit",desc:"Protection auditive passive",risk:"bruit"},
 {cat:"Audition",code:"EN 352-2",norm:"Bouchons",desc:"Protection intra-auriculaire",risk:"bruit"},
@@ -71,7 +161,6 @@ const rawData=[
 {cat:"Audition",code:"EN 352-6",norm:"Communication",desc:"Casque avec communication",risk:"bruit"},
 {cat:"Audition",code:"EN 352-7",norm:"Bouchons dépendant",desc:"Atténuation dépendante niveau",risk:"bruit"},
 {cat:"Audition",code:"EN 352-8",norm:"Audio",desc:"Entrée audio",risk:"bruit"},
-
 // RESPIRATOIRE
 {cat:"Respiratoire",code:"EN 149",norm:"FFP",desc:"Masques filtrants jetables FFP1 FFP2 FFP3",risk:"bio"},
 {cat:"Respiratoire",code:"EN 140",norm:"Demi masque",desc:"Masque filtrant avec cartouches",risk:"chimie"},
@@ -82,7 +171,6 @@ const rawData=[
 {cat:"Respiratoire",code:"EN 12942",norm:"Ventilé complet",desc:"Appareil ventilé complet",risk:"chimie"},
 {cat:"Respiratoire",code:"EN 137",norm:"ARI",desc:"Appareil respiratoire isolant",risk:"chimie"},
 {cat:"Respiratoire",code:"EN 14594",norm:"Adduction air",desc:"Alimentation air externe",risk:"chimie"},
-
 // MAINS
 {cat:"Mains",code:"EN 388",norm:"Mécanique",desc:"Abrasion coupure déchirure perforation",risk:"mecanique"},
 {cat:"Mains",code:"EN 374",norm:"Chimique",desc:"Protection produits chimiques et micro-organismes",risk:"chimie"},
@@ -94,10 +182,9 @@ const rawData=[
 {cat:"Mains",code:"EN 381-7",norm:"Tronçonneuse",desc:"Protection scie à chaîne",risk:"mecanique"},
 {cat:"Mains",code:"EN 1082",norm:"Coupure",desc:"Protection couteaux",risk:"mecanique"},
 {cat:"Mains",code:"EN 659",norm:"Pompiers",desc:"Gants incendie",risk:"thermique"},
-
 // CORPS
 {cat:"Corps",code:"EN ISO 20471",norm:"Haute visibilité",desc:"Classe 1 à 3",risk:"mecanique"},
-{cat:"Corps",code:"EN ISO 13688",norm:"Exigences générales",desc:"Base vêtements de protection",risk:"mecanique"},
+{cat:"Corps",code:"EN ISO 13688",norm:"Exigences générales",desc:"Base vêtements de protection"},
 {cat:"Corps",code:"EN 343",norm:"Pluie",desc:"Protection contre intempéries",risk:"thermique"},
 {cat:"Corps",code:"EN 342",norm:"Froid",desc:"Protection froid intense",risk:"thermique"},
 {cat:"Corps",code:"EN 14058",norm:"Froid modéré",desc:"Protection froid léger",risk:"thermique"},
@@ -111,7 +198,6 @@ const rawData=[
 {cat:"Corps",code:"EN 381-5",norm:"Tronçonneuse",desc:"Protection scie à chaîne",risk:"mecanique"},
 {cat:"Corps",code:"EN 61482",norm:"Arc électrique",desc:"Protection arc flash",risk:"elec"},
 {cat:"Corps",code:"EN 510",norm:"Pièces en mouvement",desc:"Vêtements anti-accrochage",risk:"mecanique"},
-
 // PIEDS
 {cat:"Pieds",code:"EN ISO 20345",norm:"S1",desc:"Embout + antistatique"},
 {cat:"Pieds",code:"EN ISO 20345",norm:"S1P",desc:"S1 + anti perforation"},
@@ -122,8 +208,7 @@ const rawData=[
 {cat:"Pieds",code:"EN ISO 20347",norm:"O1",desc:"Sans coque"},
 {cat:"Pieds",code:"EN ISO 20347",norm:"O2",desc:"Résistant eau"},
 {cat:"Pieds",code:"EN ISO 20347",norm:"O3",desc:"Terrain"},
-{cat:"Pieds",code:"EN 61340",norm:"ESD",desc:"ATEX"},
-
+{cat:"Pieds",code:"EN 61340",norm:"ESD",desc:"ATEX",risk:"elec"},
 // CHUTE
 {cat:"Chute",code:"EN 361",norm:"Harnais",desc:"Arrêt de chute",risk:"chute"},
 {cat:"Chute",code:"EN 358",norm:"Maintien",desc:"Positionnement travail",risk:"chute"},
@@ -137,7 +222,6 @@ const rawData=[
 {cat:"Chute",code:"EN 795",norm:"Ancrage",desc:"Points d'ancrage",risk:"chute"},
 {cat:"Chute",code:"EN 813",norm:"Ceinture",desc:"Travaux sur corde",risk:"chute"},
 {cat:"Chute",code:"EN 1497",norm:"Sauvetage",desc:"Harnais sauvetage",risk:"chute"},
-
 // SPÉCIFIQUE
 {cat:"Spécifique",code:"EN 421",norm:"Rayonnement",desc:"Protection ionisante",risk:"spe"},
 {cat:"Spécifique",code:"EN 1146",norm:"Appareil évacuation",desc:"Évacuation fumées",risk:"chimie"},
@@ -146,33 +230,125 @@ const rawData=[
 {cat:"Spécifique",code:"EN 141",norm:"Filtres gaz",desc:"Filtres respiratoires",risk:"chimie"},
 {cat:"Spécifique",code:"EN 143",norm:"Filtres particules",desc:"Protection poussières",risk:"bio"},
 {cat:"Spécifique",code:"EN 812",norm:"Casquette anti-heurt",desc:"Protection choc léger",risk:"mecanique"}
+];
 
-function filter(){
-const q=document.getElementById("search").value.toLowerCase()
-const container=document.getElementById("container")
-container.innerHTML=""
+const CATS=Object.keys(ICONS)
+let activeCat=null
+let activeRisk=null
 
-rawData.forEach(item=>{
-if(
-item.code.toLowerCase().includes(q) ||
-item.norm.toLowerCase().includes(q) ||
-item.desc.toLowerCase().includes(q)
-){
-const div=document.createElement("div")
-div.className="card"
-div.innerHTML=`
+function buildFilters(){
+  const cf=document.getElementById("catFilters")
+  CATS.forEach(c=>{
+    const b=document.createElement("button")
+    b.className="cat-btn"
+    b.textContent=ICONS[c]+" "+c
+    b.onclick=()=>{
+      activeCat=(activeCat===c)?null:c
+      document.querySelectorAll(".cat-btn").forEach(x=>x.classList.remove("active"))
+      if(activeCat)b.classList.add("active")
+      render()
+    }
+    cf.appendChild(b)
+  })
 
-<div class="code">${ICONS[item.cat]} ${item.code}</div>
-<div class="norm">${item.norm}</div>
-<div class="desc">${item.desc}</div>
-`
-container.appendChild(div)
+  const rf=document.getElementById("riskFilters")
+  Object.entries(RISK_META).forEach(([key,meta])=>{
+    const b=document.createElement("button")
+    b.className="risk-btn"
+    b.textContent=meta.label
+    b.style.color=meta.color
+    b.style.borderColor=meta.color
+    b.style.background=meta.bg
+    b.onclick=()=>{
+      activeRisk=(activeRisk===key)?null:key
+      document.querySelectorAll(".risk-btn").forEach(x=>x.classList.remove("active"))
+      if(activeRisk)b.classList.add("active")
+      render()
+    }
+    rf.appendChild(b)
+  })
 }
-})
+
+function onSearch(){
+  const val=document.getElementById("search").value
+  document.getElementById("clearBtn").style.display=val?"block":"none"
+  render()
 }
 
-filter()
+function clearSearch(){
+  document.getElementById("search").value=""
+  document.getElementById("clearBtn").style.display="none"
+  render()
+}
 
+function render(){
+  const q=document.getElementById("search").value.toLowerCase().trim()
+  const container=document.getElementById("container")
+  container.innerHTML=""
+
+  let filtered=rawData.filter(item=>{
+    const matchQ=!q||(
+      item.code.toLowerCase().includes(q)||
+      item.norm.toLowerCase().includes(q)||
+      item.desc.toLowerCase().includes(q)
+    )
+    const matchCat=!activeCat||(item.cat===activeCat)
+    const matchRisk=!activeRisk||(item.risk===activeRisk)
+    return matchQ&&matchCat&&matchRisk
+  })
+
+  document.getElementById("count").textContent=
+    filtered.length===0?"":filtered.length+" EPI trouvé"+(filtered.length>1?"s":"")
+
+  if(filtered.length===0){
+    container.innerHTML='<div class="no-result">Aucun résultat pour cette recherche.</div>'
+    return
+  }
+
+  const grouped={}
+  filtered.forEach(item=>{
+    if(!grouped[item.cat])grouped[item.cat]=[]
+    grouped[item.cat].push(item)
+  })
+
+  CATS.forEach(cat=>{
+    if(!grouped[cat])return
+    const h=document.createElement("div")
+    h.className="section-header"
+    h.textContent=ICONS[cat]+" "+cat
+    container.appendChild(h)
+
+    grouped[cat].forEach(item=>{
+      const div=document.createElement("div")
+      div.className="card"
+      const risk=item.risk&&RISK_META[item.risk]
+      div.innerHTML=`
+        <div class="card-top">
+          <div class="code">${item.code}</div>
+          ${risk?`<span class="badge" style="color:${risk.color};background:${risk.bg};border:1px solid ${risk.color}33">${risk.label}</span>`:""}
+        </div>
+        <div class="norm">${item.norm}</div>
+        <div class="desc">${item.desc}</div>
+      `
+      container.appendChild(div)
+    })
+  })
+}
+
+// Service Worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js')
+      .catch(err=>console.warn('SW non enregistré:',err))
+  })
+}
+
+// Bannière offline
+window.addEventListener('online', ()=>{ document.getElementById("offlineBanner").style.display="none" })
+window.addEventListener('offline',()=>{ document.getElementById("offlineBanner").style.display="block" })
+
+buildFilters()
+render()
 </script>
 </body>
 </html>

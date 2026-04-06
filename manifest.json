@@ -1,11 +1,11 @@
 {
-  "name": "EPI Master v1.0",
+  "name": "EPI Master v6.2",
   "short_name": "EPI Master",
   "description": "Référentiel complet des normes et marquages EPI",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#050505",
-  "theme_color": "#3b82f6",
+  "theme_color": "#10b981",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/785/785116.png",
@@ -14,7 +14,7 @@
       "purpose": "any maskable"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/192/192/785/785116.png",
+      "src": "https://cdn-icons-png.flaticon.com/192/785/785116.png",
       "sizes": "192x192",
       "type": "image/png"
     }

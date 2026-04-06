@@ -1,33 +1,28 @@
-const cacheName = 'epi-master-v1';
+const cacheName = 'epi-master-v6.2';
 const assets = [
   './index.html',
   './manifest.json',
   'https://cdn-icons-png.flaticon.com/512/785/785116.png'
 ];
 
-// Installation : mise en cache des ressources
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(cacheName).then(cache => {
-      return cache.addAll(assets);
-    })
+    caches.open(cacheName).then(cache => cache.addAll(assets))
   );
+  self.skipWaiting();
 });
 
-// Nettoyage des anciens caches
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(keys.filter(key => key !== cacheName).map(key => caches.delete(key)));
-    })
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== cacheName).map(k => caches.delete(k)))
+    )
   );
+  self.clients.claim();
 });
 
-// Stratégie Cache-first : on cherche dans le cache, sinon on va sur le réseau
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(res => {
-      return res || fetch(e.request);
-    })
+    caches.match(e.request).then(res => res || fetch(e.request))
   );
 });
