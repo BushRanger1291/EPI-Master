@@ -161,16 +161,21 @@ const rawData=[
 {cat:"Corps",code:"EN 14605",norm:"Chimie étanche",desc:"Type 3 et 4",risk:"chimie"},
 
 // PIEDS
-{cat:"Pieds",code:"S1/S2/S3",norm:"Sécurité",desc:"Embout 200J, Antistatique, Eau, Perforation",risk:"mecanique"},
-{cat:"Pieds",code:"S4",norm:"Botte",desc:"Polymère embout",risk:"mecanique"},
-{cat:"Pieds",code:"S5",norm:"Botte anti-perf",desc:"S4 + anti perforation",risk:"mecanique"},
-{cat:"Pieds",code:"S6/S7",norm:"Étanche",desc:"S2/S3 avec étanchéité totale WR",risk:"mecanique"},
-{cat:"Pieds",code:"EN ISO 20347",norm:"Travail",desc:"Sans embout de sécurité",risk:"mecanique"},
-{cat:"Pieds",code:"EN ISO 20349",norm:"Fonderie",desc:"Protection métal en fusion",risk:"thermique"},
-{cat:"Pieds",code:"EN ISO 20346",norm:"Protection",desc:"Embout 100 joules",risk:"mecanique"},
-{cat:"Pieds",code:"EN ISO 20348",norm:"Chimie",desc:"Protection produits chimiques",risk:"chimie"},
-{cat:"Pieds",code:"EN ISO 17249",norm:"Tronçonneuse",desc:"Protection scie chaîne",risk:"mecanique"},
-{cat:"Pieds",code:"EN ISO 13287",norm:"Glissement",desc:"Résistance glissement",risk:"mecanique"},
+{cat:"Pieds",code:"S1",norm:"Sécurité",desc:"Embout 200J, antistatique, absorption talon, semelle hydrocarbures",risk:"mecanique"},
+{cat:"Pieds",code:"S1P",norm:"Sécurité",desc:"S1 + semelle anti-perforation",risk:"mecanique"},
+{cat:"Pieds",code:"S2",norm:"Sécurité",desc:"S1 + résistance pénétration eau (WRU)",risk:"mecanique"},
+{cat:"Pieds",code:"S3",norm:"Sécurité",desc:"S2 + anti-perforation + semelle cramponnée",risk:"mecanique"},
+{cat:"Pieds",code:"S4",norm:"Botte",desc:"Embout 200J, polymère étanche, antistatique",risk:"mecanique"},
+{cat:"Pieds",code:"S5",norm:"Botte",desc:"S4 + anti-perforation + semelle cramponnée",risk:"mecanique"},
+{cat:"Pieds",code:"S6",norm:"Sécurité",desc:"S2 + étanchéité complète WR",risk:"mecanique"},
+{cat:"Pieds",code:"S7",norm:"Sécurité",desc:"S3 + étanchéité complète WR",risk:"mecanique"},
+
+{cat:"Pieds",code:"EN ISO 20347",norm:"Travail",desc:"Chaussures sans embout de sécurité",risk:"mecanique"},
+{cat:"Pieds",code:"EN ISO 20349",norm:"Fonderie",desc:"Protection métal en fusion et chaleur",risk:"thermique"},
+{cat:"Pieds",code:"EN ISO 20346",norm:"Protection",desc:"Embout protection 100 joules",risk:"mecanique"},
+{cat:"Pieds",code:"EN ISO 20348",norm:"Chimie",desc:"Protection produits chimiques liquides",risk:"chimie"},
+{cat:"Pieds",code:"EN ISO 17249",norm:"Tronçonneuse",desc:"Protection scie chaîne pour pieds",risk:"mecanique"},
+{cat:"Pieds",code:"EN ISO 13287",norm:"Glissement",desc:"Résistance au glissement SRC",risk:"mecanique"},
 
 // CHUTE
 {cat:"Chute",code:"EN 361",norm:"Harnais",desc:"Harnais complet arrêt chute",risk:"chute"},
